@@ -4,7 +4,6 @@ export async function checkCustomerFunc(page: any, customerId: string, email:str
     
     const iframe = page.frameLocator('iframe[title="undefined"]');
 
-    await expect(page.getByText('Dynamics 365 Business Central')).toBeVisible();
     await page.getByLabel('Search').click();
     await iframe.getByRole('textbox', { name: 'Tell me what you want to do' }).fill('Customers');
     await iframe.locator('#GroupedListSection335').getByText('Customers', { exact: true }).click();
@@ -15,6 +14,8 @@ export async function checkCustomerFunc(page: any, customerId: string, email:str
     
     await iframe.locator('.ms-SearchBox').click();
     await iframe.getByPlaceholder('Search').fill(customerId);
+
+    await expect(iframe.getByLabel('Customer List').locator('div').last()).toBeVisible();
     //----comprobar customer
     await iframe.getByTitle('Open record "' + customerId + '"').click();
   

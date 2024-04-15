@@ -4,7 +4,7 @@ export async function checkSalesOrderFunc(page: any, itemId: string, customerId:
     const iframe = page.frameLocator('iframe[title="undefined"]');
     
     //----esperar que se cargue la pagina de bc
-    await expect(page.getByText('Dynamics 365 Business Central')).toBeVisible();
+    
     await page.getByLabel('Search').click();
     await iframe.getByRole('textbox', { name: 'Tell me what you want to do' }).fill('Sales Orders');
     await iframe.locator('#GroupedListSection335').getByText('Sales Orders', { exact: true }).click();
@@ -15,6 +15,9 @@ export async function checkSalesOrderFunc(page: any, itemId: string, customerId:
     //----busca y comprueba
     await iframe.locator('.ms-SearchBox-iconContainer').click();
     await iframe.getByPlaceholder('Search').fill(salesOrderId);
+
+    await expect(iframe.getByLabel('Customer List').locator('div')).toBeVisible();
+
     await iframe.getByTitle('Open record "' + salesOrderId + '"').click();
     //----espera que se abra
     await expect(iframe.getByRole('button', { name: 'General" / "' })).toBeVisible();

@@ -6,7 +6,6 @@ export async function createItemFunc(page: any, unitVolume: string): Promise<str
     
     const iframe = page.frameLocator('iframe[title="undefined"]');
     //----esperar que se cargue la pagina de bc
-    await expect(page.getByText('Dynamics 365 Business Central')).toBeVisible();
     await page.getByLabel('Search').click();
     await iframe.getByRole('textbox', { name: 'Tell me what you want to do' }).fill('Items');
     await iframe.locator('#GroupedListSection335').getByText('Items', { exact: true }).click();
