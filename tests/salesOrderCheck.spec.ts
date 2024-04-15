@@ -16,7 +16,7 @@ export async function checkSalesOrderFunc(page: any, itemId: string, customerId:
     await iframe.locator('.ms-SearchBox-iconContainer').click();
     await iframe.getByPlaceholder('Search').fill(salesOrderId);
 
-    await expect(iframe.getByLabel('Customer List').locator('div')).toBeVisible();
+    await expect(iframe.getByLabel('Customer List').locator('div').last()).toBeVisible();
 
     await iframe.getByTitle('Open record "' + salesOrderId + '"').click();
     //----espera que se abra
