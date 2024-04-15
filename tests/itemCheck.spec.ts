@@ -9,6 +9,10 @@ export async function checkItemFunc(page: any, itemId: string, unitVolume: strin
 
     await iframe.locator('#GroupedListSection335').getByText('Items', { exact: true }).click();
 
+    //----poner la vista de lista
+    await iframe.getByLabel('', { exact: true }).click();
+    await iframe.getByLabel('List').click();
+
     await iframe.locator('.ms-SearchBox').click();
     await iframe.getByPlaceholder('Search').fill(itemId);
     //----comprobar item

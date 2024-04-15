@@ -10,9 +10,6 @@ export async function createCustomerFunc(page: any, email:string): Promise<strin
     await page.getByLabel('Search').click();
     await iframe.getByRole('textbox', { name: 'Tell me what you want to do' }).fill('Customers');
     await iframe.locator('#GroupedListSection335').getByText('Customers', { exact: true }).click();
-    //----poner la vista de lista
-    await iframe.getByLabel('', { exact: true }).click();
-    await iframe.getByLabel('List').click();
     //----crear customer
     await iframe.getByRole('menuitem', { name: 'New', exact: true }).click();
     //----esperar a que se abra

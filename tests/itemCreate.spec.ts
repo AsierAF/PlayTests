@@ -10,9 +10,7 @@ export async function createItemFunc(page: any, unitVolume: string): Promise<str
     await page.getByLabel('Search').click();
     await iframe.getByRole('textbox', { name: 'Tell me what you want to do' }).fill('Items');
     await iframe.locator('#GroupedListSection335').getByText('Items', { exact: true }).click();
-    //----poner la vista de lista
-    await iframe.getByLabel('', { exact: true }).click();
-    await iframe.getByLabel('List').click();
+
     //----crear item
     await iframe.getByRole('button', { name: 'New', exact: true }).click();
     //----espera a que se abra

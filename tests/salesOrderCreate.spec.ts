@@ -9,9 +9,7 @@ export async function createSalesOrderFunc(page: any, itemId: string, customerId
   await page.getByLabel('Search').click();
   await iframe.getByRole('textbox', { name: 'Tell me what you want to do' }).fill('Sales Orders');
   await iframe.locator('#GroupedListSection335').getByText('Sales Orders', { exact: true }).click();
-  //----poner la vista de lista
-  await page.frameLocator('iframe[title="undefined"]').getByLabel('', { exact: true }).click();
-  await page.frameLocator('iframe[title="undefined"]').getByLabel('List').click();
+
   //----crear sales order
   await expect(iframe.getByRole('button', { name: 'Sales Orders:', exact: true })).toBeVisible();
   await iframe.getByRole('menuitem', { name: 'New' }).click();

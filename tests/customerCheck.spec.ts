@@ -9,6 +9,10 @@ export async function checkCustomerFunc(page: any, customerId: string, email:str
     await iframe.getByRole('textbox', { name: 'Tell me what you want to do' }).fill('Customers');
     await iframe.locator('#GroupedListSection335').getByText('Customers', { exact: true }).click();
 
+    //----poner la vista de lista
+    await iframe.getByLabel('', { exact: true }).click();
+    await iframe.getByLabel('List').click();
+    
     await iframe.locator('.ms-SearchBox').click();
     await iframe.getByPlaceholder('Search').fill(customerId);
     //----comprobar customer
