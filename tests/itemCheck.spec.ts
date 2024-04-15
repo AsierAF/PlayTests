@@ -3,12 +3,9 @@ import { test, expect } from '@playwright/test';
 export async function checkItemFunc(page: any, itemId: string, unitVolume: string): Promise<void> {
     const iframe = page.frameLocator('iframe[title="undefined"]');
 
-    
     await page.getByLabel('Search').click();
     await iframe.getByRole('textbox', { name: 'Tell me what you want to do' }).fill('Items');
-
     await iframe.locator('#GroupedListSection335').getByText('Items', { exact: true }).click();
-
     
     //----poner la vista de lista
     await iframe.getByLabel('', { exact: true }).click();
