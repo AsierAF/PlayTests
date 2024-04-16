@@ -2,13 +2,11 @@ import { test, expect } from '@playwright/test';
 import { login } from './supportFunctions.spec';
 import { listView, lookForSection } from './supportFunctions.spec';
 
-export async function checkSalesOrderFunc(page: any, itemId: string, customerId: string, salesOrderId: string, documentName: string): Promise<void> {
+export async function checkSalesOrderFunc(page: any, itemId: string, customerId: string, salesOrderId: string, documentName: string, section: string): Promise<void> {
   const iframe = page.frameLocator('iframe[title="undefined"]');
-  const section = 'Sales Orders'
+
   //----esperar que se cargue la pagina de bc
-
   await lookForSection(section, page, iframe);
-
   //----poner la vista de lista
   await listView(iframe);
   //----busca y comprueba
@@ -40,6 +38,8 @@ export async function checkSalesOrderFunc(page: any, itemId: string, customerId:
   console.log('Checked sales id: ', extractedId);
 
   console.log('ItemId used: ', itemId);
+
+  
   console.log('CustomerId used: ', customerId);
   //----cerrar
 
@@ -50,8 +50,9 @@ test('Check Sales Order', async ({ page }) => {
   const customerId = 'C1330';
   const salesOrder = 'S-ORD101147';
   const documentName = 'salesorderpdf';
+  const salesOrderSection = 'Sales Orders';
   await login(page);
-  await checkSalesOrderFunc(page, itemId, customerId, salesOrder, documentName);
+  await checkSalesOrderFunc(page, itemId, customerId, salesOrder, documentName, salesOrderSection);
   await page.waitForLoadState('networkidle');
   await page.close();
 });

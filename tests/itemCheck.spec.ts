@@ -1,10 +1,9 @@
-import { test, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { listView, lookForSection } from './supportFunctions.spec';
 
 
-export async function checkItemFunc(page: any, itemId: string, unitVolume: string): Promise<void> {
+export async function checkItemFunc(page: any, itemId: string, unitVolume: string, section: string): Promise<void> {
     const iframe = page.frameLocator('iframe[title="undefined"]');
-    const section = 'Items'
 
     await lookForSection(section, page, iframe)
     //----poner la vista de lista

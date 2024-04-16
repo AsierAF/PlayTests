@@ -1,13 +1,12 @@
-import { test, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { listView, lookForSection } from './supportFunctions.spec';
 
-export async function checkCustomerFunc(page: any, customerId: string, email: string): Promise<void> {
+export async function checkCustomerFunc(page: any, customerId: string, email: string, section: string): Promise<void> {
   const iframe = page.frameLocator('iframe[title="undefined"]');
-  const section = 'Customers'
 
   await lookForSection(section, page, iframe);
   //----poner la vista de lista
-  await listView(page);
+  await listView(iframe);
   //----busca y comprueba
   await iframe.locator('.ms-SearchBox').click();
   await iframe.getByPlaceholder('Search').fill(customerId);

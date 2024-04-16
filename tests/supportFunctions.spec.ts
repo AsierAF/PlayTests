@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
 
 export async function login(page:any){
     await page.goto('http://bcsandboxfinal/BC/?tenant=default');
@@ -11,8 +11,10 @@ export async function login(page:any){
 }
 
 export async function listView(iframe: any){
-  await iframe.getByLabel('', { exact: true }).click();
-  await iframe.getByLabel('List').click();
+  await expect(iframe.getByTitle('View layout options')).toBeVisible();
+  //await iframe.getByLabel('', { exact: true }).click();
+  await iframe.getByTitle('View layout options').click();
+  await iframe.getByTitle('Show as list').click();
 }
 
 export async function lookForSection(section: string, page: any, iframe: any) {

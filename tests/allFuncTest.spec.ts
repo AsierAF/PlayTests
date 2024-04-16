@@ -11,12 +11,14 @@ import { login } from './supportFunctions.spec';
 test.describe('allTest',() => {
   let itemId: string;
   let customerId: string;
-  let salesOrder: string;
+  let salesOrderId: string;
   const unitVolume = '99';
   const email = 'email@email.com';
   const documentName = 'salesorderpdf';
+  const itemSection = 'Items';
+  const customerSection = 'Customers';
+  const salesOrderSection = 'Sales Orders';
 
-  
   test.beforeEach('Open & Login',async({page}) => {
     await login(page);
   });
@@ -27,27 +29,27 @@ test.describe('allTest',() => {
   });
 
   test('Create Item', async ({ page }) => {
-    itemId = await createItemFunc(page, unitVolume)
+    itemId = await createItemFunc(page, itemId, unitVolume, itemSection)
   });
 
   test('Check Item', async ({ page }) => {
-    await checkItemFunc(page, itemId, unitVolume);
+    await checkItemFunc(page, itemId, unitVolume, itemSection);
   });
 
   test('Create Customer', async ({ page }) => {
-    customerId = await createCustomerFunc(page, email);
+    customerId = await createCustomerFunc(page, customerId, email, customerSection);
   });
 
   test('Check Customer', async ({ page }) => {
-    await checkCustomerFunc(page, customerId , email);
+    await checkCustomerFunc(page, customerId , email, customerSection);
   });
 
   test('Create Sales Order', async ({ page }) => {
-    salesOrder = await createSalesOrderFunc(page, itemId, customerId, documentName);
+    salesOrderId = await createSalesOrderFunc(page, itemId, customerId, salesOrderId, documentName, salesOrderSection);
   });
 
   test('Check Sales Order', async ({ page }) => {
-    await checkSalesOrderFunc(page, itemId, customerId, salesOrder ,documentName);
+    await checkSalesOrderFunc(page, itemId, customerId, salesOrderId ,documentName, salesOrderSection);
   });
 
 });
