@@ -5,7 +5,6 @@ import { listView, lookForSection } from './supportFunctions.spec';
 export async function checkSalesOrderFunc(page: any, itemId: string, customerId: string, salesOrderId: string, documentName: string, section: string): Promise<void> {
   const iframe = page.frameLocator('iframe[title="undefined"]');
 
-  //----esperar que se cargue la pagina de bc
   await lookForSection(section, page, iframe);
   //----poner la vista de lista
   await listView(iframe);
@@ -25,40 +24,35 @@ export async function checkSalesOrderFunc(page: any, itemId: string, customerId:
   await expect(iframe.getByRole('button', { name: 'General" / "' })).toBeVisible();
   //----comprueba el texto
   const checkedDocument = await iframe.getByRole('textbox', { name: 'External Document No.' }).inputValue();
-  console.log('Document name:', checkedDocument);
+  console.log('Document name:', checkedDocument.toLocaleLowerCase());
   expect(checkedDocument.toLocaleLowerCase).toBe(documentName.toLocaleLowerCase);
   //----comprueba el id
   const checkedSalesOrder = await iframe.locator('.title--DaOt1SlIHGgb2tatyyfP').innerText();
-  
-  //----regular expression para sacar el id de la sales order
-  const regex = /([A-Z]-[A-Z]+[\d]+)/;
+
+  //----regular expression para sacar el id de la sales order si usaramos match[3] seria el nombre del customer
+  const regex = /(\S+)\s(.)\s(\S+)/;
   const match = checkedSalesOrder.match(regex);
-  const extractedId = match ? match[0] : null;
-  expect(salesOrderId).toBe(extractedId);
+  const extractedId = match[1];
+  expect(extractedId).toBe(salesOrderId);
   console.log('Checked sales id: ', extractedId);
-
+  //----comprobar customer
   await iframe.getByLabel('Choose a value for Customer Name').click();
-  const checkedCustomerId = await iframe.getByTitle('Select record "' + customerId + '"');
-  expect(checkedCustomerId).toBe(customerId);
-  console.log('Customer id checked: ',checkedCustomerId)
+  const checkedCustomerId = await iframe.getByTitle('Select record "' + customerId + '"').innerText();
+  console.log('Customer id checked: ', checkedCustomerId)
   console.log('CustomerId used: ', customerId);
+  expect(checkedCustomerId).toBe(customerId);
   await iframe.getByTitle('Save and close the page').click();
-
+  //----comprobar item
   await iframe.getByLabel('Toggle focus mode').click();
   const checkedItemId = await iframe.getByRole('combobox', { name: 'No.', exact: true }).inputValue();
-  expect(checkedItemId).toBe(itemId);
   console.log('ItemId checked: ', checkedItemId);
   console.log('ItemId used: ', itemId);
-
-
-  
-  //----cerrar
-
+  expect(checkedItemId).toBe(itemId);
 }
 
 test('Check Sales Order', async ({ page }) => {
   const itemId = '1136';
-  const customerId = 'C1330';
+  const customerId = 'C01330';
   const salesOrder = 'S-ORD101147';
   const documentName = 'salesorderpdf';
   const salesOrderSection = 'Sales Orders';

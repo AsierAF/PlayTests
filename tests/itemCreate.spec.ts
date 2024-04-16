@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test';
 import { lookForSection } from './supportFunctions.spec';
 
-export async function createItemFunc(page: any, itemId: string, unitVolume: string, section:string): Promise<string> {
+export async function createItemFunc(page: any, itemId: string, unitVolume: string, section: string): Promise<string> {
     const iframe = page.frameLocator('iframe[title="undefined"]');
 
     //----esperar que se cargue la pagina de bc

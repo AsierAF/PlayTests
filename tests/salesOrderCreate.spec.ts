@@ -1,14 +1,14 @@
 import { expect } from '@playwright/test';
 import { lookForSection } from './supportFunctions.spec';
 
-export async function createSalesOrderFunc(page: any, itemId: string, customerId:string, salesOrderId: string ,documentName: string, section: string): Promise<string> {
+export async function createSalesOrderFunc(page: any, itemId: string, customerId: string, salesOrderId: string, documentName: string, section: string): Promise<string> {
   const iframe = page.frameLocator('iframe[title="undefined"]');
 
   //----esperar que se cargue la pagina de bc
   await lookForSection(section, page, iframe);
 
   //----crear sales order
-  await expect(iframe.getByRole('button', { name: 'Sales Orders:' , exact: true })).toBeVisible();
+  await expect(iframe.getByRole('button', { name: 'Sales Orders:', exact: true })).toBeVisible();
   await iframe.getByRole('menuitem', { name: 'New' }).click();
   await iframe.getByRole('textbox', { name: 'Contact (Blank)' }).click();
   //----esperar a que se abra

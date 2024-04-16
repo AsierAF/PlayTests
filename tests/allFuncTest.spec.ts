@@ -8,7 +8,7 @@ import { checkItemFunc } from './itemCheck.spec';
 
 import { login } from './supportFunctions.spec';
 
-test.describe('allTest',() => {
+test.describe('allTest', () => {
   let itemId: string;
   let customerId: string;
   let salesOrderId: string;
@@ -19,17 +19,17 @@ test.describe('allTest',() => {
   const customerSection = 'Customers';
   const salesOrderSection = 'Sales Orders';
 
-  test.beforeEach('Open & Login',async({page}) => {
+  test.beforeEach('Open & Login', async ({ page }) => {
     await login(page);
   });
 
-  test.afterEach('Wait & Close', async({page}) => {
+  test.afterEach('Wait & Close', async ({ page }) => {
     await page.waitForLoadState('networkidle');
     await page.close();
   });
 
   test('Create Item', async ({ page }) => {
-    itemId = await createItemFunc(page, itemId, unitVolume, itemSection)
+    itemId = await createItemFunc(page, itemId, unitVolume, itemSection);
   });
 
   test('Check Item', async ({ page }) => {
@@ -41,7 +41,7 @@ test.describe('allTest',() => {
   });
 
   test('Check Customer', async ({ page }) => {
-    await checkCustomerFunc(page, customerId , email, customerSection);
+    await checkCustomerFunc(page, customerId, email, customerSection);
   });
 
   test('Create Sales Order', async ({ page }) => {
@@ -49,7 +49,7 @@ test.describe('allTest',() => {
   });
 
   test('Check Sales Order', async ({ page }) => {
-    await checkSalesOrderFunc(page, itemId, customerId, salesOrderId ,documentName, salesOrderSection);
+    await checkSalesOrderFunc(page, itemId, customerId, salesOrderId, documentName, salesOrderSection);
   });
 
 });
