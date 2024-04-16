@@ -5,7 +5,6 @@ import { createSalesOrderFunc } from './salesOrderCreate.spec';
 import { checkSalesOrderFunc } from './salesOrderCheck.spec';
 import { createItemFunc } from './itemCreate.spec';
 import { checkItemFunc } from './itemCheck.spec';
-
 import { login } from './supportFunctions.spec';
 
 test.describe('allTest', () => {
@@ -18,7 +17,8 @@ test.describe('allTest', () => {
   const itemSection = 'Items';
   const customerSection = 'Customers';
   const salesOrderSection = 'Sales Orders';
-
+  //const frLoc = 'iframe[title="undefined"]';
+  
   test.beforeEach('Open & Login', async ({ page }) => {
     await login(page);
   });
