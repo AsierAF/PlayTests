@@ -1,33 +1,25 @@
 import { test, expect } from '@playwright/test';
+import { listView, lookForSection } from './supportFunctions.spec';
 
-export async function checkCustomerFunc(page: any, customerId: string, email:string): Promise<void> {
-    
-    const iframe = page.frameLocator('iframe[title="undefined"]');
+export async function checkCustomerFunc(page: any, customerId: string, email: string): Promise<void> {
+  const iframe = page.frameLocator('iframe[title="undefined"]');
+  const section = 'Customers'
 
-    await page.getByLabel('Search').click();
-    await iframe.getByRole('textbox', { name: 'Tell me what you want to do' }).fill('Customers');
-    await iframe.locator('#GroupedListSection335').getByText('Customers', { exact: true }).click();
+  await lookForSection(section, page, iframe);
+  //----poner la vista de lista
+  await listView(page);
+  //----busca y comprueba
+  await iframe.locator('.ms-SearchBox').click();
+  await iframe.getByPlaceholder('Search').fill(customerId);
 
-    //----poner la vista de lista
-    await iframe.getByLabel('', { exact: true }).click();
-    await iframe.getByLabel('List').click();
-    
-    await iframe.locator('.ms-SearchBox').click();
-    await iframe.getByPlaceholder('Search').fill(customerId);
+  //----comprobar customer
+  await iframe.getByTitle('Open record "' + customerId + '"').focus();
+  await iframe.getByTitle('Open record "' + customerId + '"').click();
 
-    //await expect(iframe.getByLabel('Customer List').locator('div').last()).toBeVisible();
-    await iframe.getByTitle('Open record "' + customerId + '"').focus();
+  const checkedEmail = await iframe.getByLabel('Email', { exact: true }).inputValue();
+  console.log('email:', checkedEmail);
+  expect(checkedEmail).toBe(email);
 
-    
-    //----comprobar customer
-    await iframe.getByTitle('Open record "' + customerId + '"').click();
-  
-    const checkedEmail = iframe.getByLabel('Email', { exact: true });
-    const emailValue = await checkedEmail.inputValue();
-    console.log('email:', emailValue);
-    expect(emailValue).toBe(email);
-    const checkedCustomerId = iframe.getByRole('textbox', { name: 'No.', exact: true });
-    const checkedCustomerValue = await checkedCustomerId.inputValue();
-    expect(checkedCustomerValue.toString()).toBe(customerId.toString());
-   
-  }
+  const checkedCustomerId = await iframe.getByRole('textbox', { name: 'No.', exact: true }).inputValue();
+  expect(checkedCustomerId.toString()).toBe(customerId.toString());
+}

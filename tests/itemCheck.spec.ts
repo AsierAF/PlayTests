@@ -1,33 +1,28 @@
 import { test, expect } from '@playwright/test';
+import { listView, lookForSection } from './supportFunctions.spec';
+
 
 export async function checkItemFunc(page: any, itemId: string, unitVolume: string): Promise<void> {
     const iframe = page.frameLocator('iframe[title="undefined"]');
+    const section = 'Items'
 
-    await page.getByLabel('Search').click();
-    await iframe.getByRole('textbox', { name: 'Tell me what you want to do' }).fill('Items');
-    await iframe.locator('#GroupedListSection335').getByText('Items', { exact: true }).click();
-    
+    await lookForSection(section, page, iframe)
     //----poner la vista de lista
-    await iframe.getByLabel('', { exact: true }).click();
-    await iframe.getByLabel('List').click();
-
+    await listView(iframe);
+    //----busca y comprueba
     await iframe.locator('.ms-SearchBox').click();
     await iframe.getByPlaceholder('Search').fill(itemId);
-    
-   
+
     //await expect(iframe.getByLabel('Item List').locator('div').last()).toBeVisible();
 
-    await iframe.getByTitle('Open record "' + itemId + '"').focus();
-
     //----comprobar item
+    await iframe.getByTitle('Open record "' + itemId + '"').focus();
     await iframe.getByTitle('Open record "' + itemId + '"').click();
-    const checkedVolume = iframe.getByLabel('Unit Volume');
-    const volumeValue = await checkedVolume.inputValue();
-    console.log('Unit Volume:', volumeValue);
-    expect(volumeValue.toString()).toBe(unitVolume.toString());
-    const checkedItemId = iframe.getByRole('textbox', { name: 'No.', exact: true });
-    const checkedIdValue = await checkedItemId.inputValue();
-    expect(checkedIdValue.toString()).toBe(itemId.toString());
 
+    const checkedVolume = await iframe.getByLabel('Unit Volume').inputValue();
+    console.log('Unit Volume:', checkedVolume);
+    expect(checkedVolume.toString()).toBe(unitVolume.toString());
 
+    const checkedItemId = await iframe.getByRole('textbox', { name: 'No.', exact: true }).inputValue();
+    expect(checkedItemId.toString()).toBe(itemId.toString());
 }
