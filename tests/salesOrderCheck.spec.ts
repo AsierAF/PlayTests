@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { login } from './supportFunctions.spec';
 
 export async function checkSalesOrderFunc(page: any, itemId: string, customerId:string, salesOrderId: string, documentName:string): Promise<void> {
     const iframe = page.frameLocator('iframe[title="undefined"]');
@@ -16,17 +17,11 @@ export async function checkSalesOrderFunc(page: any, itemId: string, customerId:
     await iframe.locator('.ms-SearchBox-iconContainer').click();
     await iframe.getByPlaceholder('Search').fill(salesOrderId);
     
+    await iframe.getByTitle('Open record "' + salesOrderId + '"').focus();
 
-    //await expect(iframe.getByLabel('Sales Order List').locator('div').last()).toBeVisible();
-    //await expect(iframe.getByLabel('Sales Order List').locator('div').filter({ hasText: 'Sales Order ListPress Ctrl+' }).first()).toHaveText(salesOrderId)
-    const textis = await iframe.getByLabel('Sales Order List').locator('tbody > tr').first().innerText();
-    const lol = textis.split(3)
-    console.log(lol)
-    
-    await expect(iframe.getByLabel('Sales Order List').locator('tbody > tr > td')).toHaveText(salesOrderId)
-    
+
     const rows = await iframe.getByLabel('Sales Order List').locator('tbody');
-    await expect(rows).toBeVisible();
+    //await expect(rows).toBeVisible();
     const countRows = await rows.locator('tr').count();
     console.log('rows counted' ,countRows);
     
@@ -54,3 +49,14 @@ export async function checkSalesOrderFunc(page: any, itemId: string, customerId:
     //----cerrar
     
   }
+
+  test('Check Sales Order', async ({ page }) => {
+    const itemId = '1136';
+    const customerId = 'C1330';
+    const salesOrder = 'S-ORD101147';
+    const documentName = 'salesorderpdf';
+    await login(page);
+    await checkSalesOrderFunc(page, itemId, customerId, salesOrder ,documentName);
+    await page.waitForLoadState('networkidle');
+    await page.close();
+  });

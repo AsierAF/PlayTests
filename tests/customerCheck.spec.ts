@@ -15,7 +15,10 @@ export async function checkCustomerFunc(page: any, customerId: string, email:str
     await iframe.locator('.ms-SearchBox').click();
     await iframe.getByPlaceholder('Search').fill(customerId);
 
-    await expect(iframe.getByLabel('Customer List').locator('div').last()).toBeVisible();
+    //await expect(iframe.getByLabel('Customer List').locator('div').last()).toBeVisible();
+    await iframe.getByTitle('Open record "' + customerId + '"').focus();
+
+    
     //----comprobar customer
     await iframe.getByTitle('Open record "' + customerId + '"').click();
   
