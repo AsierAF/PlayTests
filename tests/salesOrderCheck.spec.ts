@@ -37,10 +37,21 @@ export async function checkSalesOrderFunc(page: any, itemId: string, customerId:
   expect(salesOrderId).toBe(extractedId);
   console.log('Checked sales id: ', extractedId);
 
+  await iframe.getByLabel('Choose a value for Customer Name').click();
+  const checkedCustomerId = await iframe.getByTitle('Select record "' + customerId + '"');
+  expect(checkedCustomerId).toBe(customerId);
+  console.log('Customer id checked: ',checkedCustomerId)
+  console.log('CustomerId used: ', customerId);
+  await iframe.getByTitle('Save and close the page').click();
+
+  await iframe.getByLabel('Toggle focus mode').click();
+  const checkedItemId = await iframe.getByRole('combobox', { name: 'No.', exact: true }).inputValue();
+  expect(checkedItemId).toBe(itemId);
+  console.log('ItemId checked: ', checkedItemId);
   console.log('ItemId used: ', itemId);
 
+
   
-  console.log('CustomerId used: ', customerId);
   //----cerrar
 
 }
