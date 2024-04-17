@@ -1,5 +1,5 @@
 import { lookForSection, login } from './supportFunctions.spec';
-import { test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 export async function createSalesOrderFunc(page: any, itemId: string, customerId: string, salesOrderId: string, documentName: string, quantity: string, unitPrice: string, taxGroup: string, section: string): Promise<string> {
   const iframe = page.frameLocator('iframe[title="undefined"]');
@@ -23,13 +23,23 @@ export async function createSalesOrderFunc(page: any, itemId: string, customerId
   //----esperar a que se abra
   await iframe.getByRole('heading', { name: 'Lines' }).waitFor();
   await iframe.getByRole('combobox', { name: 'No.', exact: true }).fill(itemId);
+  const itemIdTest = await iframe.getByRole('combobox', { name: 'No.', exact: true }).inputValue();
   //await iframe.getByRole('combobox', { name: 'No.', exact: true }).waitFor('attached');
   await iframe.getByRole('textbox', { name: 'Quantity', exact: true }).fill(quantity);
+  const quantityTest = await iframe.getByRole('textbox', { name: 'Quantity', exact: true }).inputValue();
   //await iframe.getByRole('textbox', { name: 'Quantity', exact: true }).waitFor('attached');
   await iframe.getByRole('textbox', { name: 'Unit Price Excl. Tax', exact: true }).fill(unitPrice);
-  await iframe.getByRole('textbox', { name: 'Unit Price Excl. Tax', exact: true }).waitFor('attached');
+  const unitPriceTest = await iframe.getByRole('textbox', { name: 'Unit Price Excl. Tax', exact: true }).inputValue();
+  //await iframe.getByRole('textbox', { name: 'Unit Price Excl. Tax', exact: true }).waitFor('attached');
   await iframe.getByRole('combobox', { name: 'Tax Group Code' }).fill(taxGroup);
+  const taxGroupTest = await iframe.getByRole('combobox', { name: 'Tax Group Code' }).inputValue();
   await iframe.getByRole('combobox', { name: 'Tax Group Code' }).waitFor('attached');
+  //await expect(iframe.getByRole('combobox', { name: 'Tax Group Code' })).toBeFocused();
+
+  console.log('itemId SOC: ', itemIdTest)
+  console.log('qty SOC: ', quantityTest)
+  console.log('unitP SOC: ', unitPriceTest)
+  console.log('tafGroup SOC: ', taxGroupTest)
   await iframe.getByRole('button', { name: 'Back' }).click();
 
   return salesOrderId;
