@@ -20,8 +20,8 @@ export async function createSalesOrderFunc(page: any, itemId: string, customerId
   await iframe.getByRole('textbox', { name: 'Unit Price Excl. Tax', exact: true }).fill(unitPrice);
   //await iframe.getByRole('textbox', { name: 'Unit Price Excl. Tax', exact: true }).waitFor('attached');
   await iframe.getByRole('combobox', { name: 'Tax Group Code' }).fill(taxGroup);
-  await iframe.getByRole('combobox', { name: 'Tax Group Code' }).waitFor('attached');
-  //await expect(iframe.getByRole('combobox', { name: 'Tax Group Code' })).toBeFocused();
+  //await iframe.getByRole('combobox', { name: 'Tax Group Code' }).waitFor('attached');
+  await expect(iframe.getByRole('combobox', { name: 'Tax Group Code' })).toBeFocused();
   await iframe.getByRole('button', { name: 'Back' }).click();
   return salesOrderId;
 }

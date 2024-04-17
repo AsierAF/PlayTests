@@ -11,7 +11,6 @@ export async function checkSalesOrderFunc(page: any, itemId: string, customerId:
   const rows = await iframe.getByLabel('Sales Order List').locator('tbody');
   let countedRows = await rows.locator('tr').count();
   while (countedRows > 10) {
-    console.log('rows counted' ,countedRows);
     countedRows = await rows.locator('tr').count();
   }
   //await iframe.getByTitle('Open record "' + salesOrderId + '"').waitFor();
