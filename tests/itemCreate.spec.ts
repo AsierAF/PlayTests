@@ -10,15 +10,14 @@ export async function createItemFunc(page: any, itemId: string, unitVolume: stri
     //----crear item
     await iframe.getByRole('button', { name: 'New', exact: true }).click();
     //----espera a que se abra
-    //       await expect(iframe.getByRole('heading', { name: 'Select a template for a new' })).toBeVisible();
-    const textTitle = iframe.getByRole('heading', { name: 'Select a template for a new' });
-    await textTitle.waitFor();
+    await iframe.getByRole('heading', { name: 'Select a template for a new' }).waitFor();
     await iframe.getByRole('button', { name: 'OK' }).click();
+
+    //----espera a que se abra
+    await iframe.getByRole('heading', { name: 'Item Card' }).waitFor();
     itemId = await iframe.locator('.title--DaOt1SlIHGgb2tatyyfP').innerText();
     console.log('Item id:', itemId.toString());
 
-    //----espera a que se abra
-    //          await expect(iframe.getByRole('heading', { name: 'Item Card' }).locator('div').nth(2)).toBeVisible();
     await iframe.getByRole('textbox', { name: 'Description' }).fill('ItemPrueba');
     await iframe.getByLabel('Unit Volume').fill(unitVolume.toString());
     await iframe.getByRole('button', { name: 'Back' }).click();

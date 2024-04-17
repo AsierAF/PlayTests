@@ -15,7 +15,7 @@ export async function checkItemFunc(page: any, itemId: string, unitVolume: strin
     //await expect(iframe.getByLabel('Item List').locator('div').last()).toBeVisible();
 
     //----comprobar item
-    await iframe.getByTitle('Open record "' + itemId + '"').focus();
+    await iframe.getByTitle('Open record "' + itemId + '"').waitFor();
     await iframe.getByTitle('Open record "' + itemId + '"').click();
 
     const checkedVolume = await iframe.getByLabel('Unit Volume').inputValue();

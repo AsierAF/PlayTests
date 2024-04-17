@@ -12,7 +12,7 @@ export async function checkCustomerFunc(page: any, customerId: string, email: st
   await iframe.getByPlaceholder('Search').fill(customerId);
 
   //----comprobar customer
-  await iframe.getByTitle('Open record "' + customerId + '"').focus();
+  await iframe.getByTitle('Open record "' + customerId + '"').waitFor();
   await iframe.getByTitle('Open record "' + customerId + '"').click();
 
   const checkedEmail = await iframe.getByLabel('Email', { exact: true }).inputValue();
