@@ -12,8 +12,6 @@ export async function checkItemFunc(page: any, itemId: string, unitVolume: strin
     await iframe.locator('.ms-SearchBox').click();
     await iframe.getByPlaceholder('Search').fill(itemId);
 
-    //await expect(iframe.getByLabel('Item List').locator('div').last()).toBeVisible();
-
     //----comprobar item
     await iframe.getByTitle('Open record "' + itemId + '"').waitFor();
     await iframe.getByTitle('Open record "' + itemId + '"').click();

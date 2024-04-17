@@ -14,7 +14,8 @@ export async function createItemFunc(page: any, itemId: string, unitVolume: stri
     await iframe.getByRole('button', { name: 'OK' }).click();
 
     //----espera a que se abra
-    await iframe.getByRole('heading', { name: 'Item Card' }).waitFor();
+    //await iframe.getByRole('heading', { name: 'Item Card' }).waitFor();
+    await iframe.locator('.title--DaOt1SlIHGgb2tatyyfP').waitFor();
     itemId = await iframe.locator('.title--DaOt1SlIHGgb2tatyyfP').innerText();
     console.log('Item id:', itemId.toString());
 
@@ -24,8 +25,10 @@ export async function createItemFunc(page: any, itemId: string, unitVolume: stri
     return itemId.toString();
 }
 
+
+let itemId: string;
 test('Create Item', async ({ page }) => {
-    const itemId = '1136';
+
     const unitVolume = '99';
     const itemSection = 'Items';
     await login(page);

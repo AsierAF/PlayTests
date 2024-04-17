@@ -17,6 +17,9 @@ test.describe('allTest', () => {
   const itemSection = 'Items';
   const customerSection = 'Customers';
   const salesOrderSection = 'Sales Orders';
+  const quantity = '10';
+  const unitPrice = '150';
+  const taxGroup = 'LABOR';
   //const frLoc = 'iframe[title="undefined"]';
   
   test.beforeEach('Open & Login', async ({ page }) => {
@@ -45,7 +48,7 @@ test.describe('allTest', () => {
   });
 
   test('Create Sales Order', async ({ page }) => {
-    salesOrderId = await createSalesOrderFunc(page, itemId, customerId, salesOrderId, documentName, salesOrderSection);
+    salesOrderId = await createSalesOrderFunc(page, itemId, customerId, salesOrderId, documentName,quantity,unitPrice,taxGroup ,salesOrderSection);
   });
 
   test('Check Sales Order', async ({ page }) => {
