@@ -12,16 +12,20 @@ export async function checkSalesOrderFunc(page: any, itemId: string, customerId:
   await iframe.locator('.ms-SearchBox-iconContainer').click();
   await iframe.getByPlaceholder('Search').fill(salesOrderId);
 
-  await iframe.getByTitle('Open record "' + salesOrderId + '"').focus();
+  const rows = await iframe.getByLabel('Sales Order List').locator('tbody');
+  //await expect(rows).toBeVisible();
+  let countedRows = await rows.locator('tr').count();
+
+  while (countedRows > 10) {
+    console.log('rows counted' ,countedRows);
+    countedRows = await rows.locator('tr').count();
+  }
+
+  //await iframe.getByTitle('Open record "' + salesOrderId + '"').waitFor();
   await iframe.getByTitle('Open record "' + salesOrderId + '"').click();
 
-  //const rows = await iframe.getByLabel('Sales Order List').locator('tbody');
-  //await expect(rows).toBeVisible();
-  //const countRows = await rows.locator('tr').count();
-  //console.log('rows counted' ,countRows);
-
   //----espera que se abra
-  await expect(iframe.getByRole('button', { name: 'General" / "' })).toBeVisible();
+  await iframe.getByRole('button', { name: 'General" / "' }).waitFor();
   //----comprueba el texto
   const checkedDocument = await iframe.getByRole('textbox', { name: 'External Document No.' }).inputValue();
   console.log('Document name:', checkedDocument.toLocaleLowerCase());
@@ -35,6 +39,7 @@ export async function checkSalesOrderFunc(page: any, itemId: string, customerId:
   const extractedId = match[1];
   expect(extractedId).toBe(salesOrderId);
   console.log('Checked sales id: ', extractedId);
+  
   //----comprobar customer
   await iframe.getByLabel('Choose a value for Customer Name').click();
   const checkedCustomerId = await iframe.getByTitle('Select record "' + customerId + '"').innerText();
@@ -42,6 +47,7 @@ export async function checkSalesOrderFunc(page: any, itemId: string, customerId:
   console.log('CustomerId used: ', customerId);
   expect(checkedCustomerId).toBe(customerId);
   await iframe.getByTitle('Save and close the page').click();
+  
   //----comprobar item
   await iframe.getByLabel('Toggle focus mode').click();
   const checkedItemId = await iframe.getByRole('combobox', { name: 'No.', exact: true }).inputValue();

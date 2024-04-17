@@ -3,7 +3,7 @@ import { test } from '@playwright/test';
 
 export async function createSalesOrderFunc(page: any, itemId: string, customerId: string, salesOrderId: string, documentName: string, quantity: string, unitPrice: string, taxGroup: string, section: string): Promise<string> {
   const iframe = page.frameLocator('iframe[title="undefined"]');
-
+  
   //----esperar que se cargue la pagina de bc
   await lookForSection(section, page, iframe);
 
@@ -13,10 +13,12 @@ export async function createSalesOrderFunc(page: any, itemId: string, customerId
   await iframe.getByRole('textbox', { name: 'Contact (Blank)' }).click();
   //----esperar a que se abra
   await iframe.getByRole('heading', { name: 'Sales Order' }).waitFor();
-  salesOrderId = await iframe.locator('.title--DaOt1SlIHGgb2tatyyfP').innerText();
-  console.log('Sales order id:', salesOrderId);
-  await iframe.getByLabel('Customer Name', { exact: true }).fill(customerId);
   await iframe.getByRole('textbox', { name: 'External Document No.' }).fill(documentName);
+  
+  salesOrderId = await iframe.locator('.title--DaOt1SlIHGgb2tatyyfP').innerText();
+  console.log('Sales id: ', salesOrderId)
+  await iframe.getByLabel('Customer Name', { exact: true }).fill(customerId);
+
   await iframe.getByLabel('Toggle focus mode').click();
   //----esperar a que se abra
   await iframe.getByRole('heading', { name: 'Lines' }).waitFor();
