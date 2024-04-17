@@ -50,7 +50,7 @@ export async function checkSalesOrderFunc(page: any, itemId: string, customerId:
   expect(checkedItemId).toBe(itemId);
 }
 
-test('Check Sales Order', async ({ page }) => {
+test('Check Sales Order 2', async ({ page }) => {
   const itemId = '1136';
   const customerId = 'C01330';
   const salesOrder = 'S-ORD101147';

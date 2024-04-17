@@ -15,8 +15,8 @@ export async function createCustomerFunc(page: any, customerId: string, email: s
   console.log('Customer id:', customerId);
   await iframe.getByRole('textbox', { name: 'Name' }).fill('CustomerPrueba');
   await iframe.getByLabel('Email', { exact: true }).fill(email);
-  //----EL SIGUIENTE CLICK ES PORQUE EL EMAIL NO SE GUARDA Y NO SE PORQUE
-  await iframe.getByRole('button', { name: 'Customer Card' }).click();
+  //----espera a que el texto se ponga
+  await expect(iframe.getByLabel('Email' , {exact:true})).toBeAttached();
   await iframe.getByRole('button', { name: 'Back' }).click();
   return customerId;
 }
