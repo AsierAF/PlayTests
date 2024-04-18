@@ -9,19 +9,27 @@ export async function createSalesOrderFunc(page: any, itemId: string, customerId
   await iframe.getByRole('textbox', { name: 'Contact (Blank)' }).click();
   await iframe.getByRole('heading', { name: 'Sales Order' }).waitFor();
   await iframe.getByRole('textbox', { name: 'External Document No.' }).fill(documentName);
-  salesOrderId = await iframe.locator('.title--DaOt1SlIHGgb2tatyyfP').innerText();
   await iframe.getByLabel('Customer Name', { exact: true }).fill(customerId);
   await iframe.getByLabel('Toggle focus mode').click();
-  await iframe.getByRole('heading', { name: 'Lines' }).waitFor();
+  //await iframe.getByRole('heading', { name: 'Lines' }).waitFor();
+  await iframe.getByRole('menuitemcheckbox', { name: 'Toggle filter' }).waitFor();
+
   await iframe.getByRole('combobox', { name: 'No.', exact: true }).fill(itemId);
-  //await iframe.getByRole('combobox', { name: 'No.', exact: true }).waitFor('attached');
-  await iframe.getByRole('textbox', { name: 'Quantity', exact: true }).fill(quantity);
-  //await iframe.getByRole('textbox', { name: 'Quantity', exact: true }).waitFor('attached');
-  await iframe.getByRole('textbox', { name: 'Unit Price Excl. Tax', exact: true }).fill(unitPrice);
-  //await iframe.getByRole('textbox', { name: 'Unit Price Excl. Tax', exact: true }).waitFor('attached');
+  await iframe.getByRole('combobox', { name: 'No.', exact: true }).waitFor('attached');
   await iframe.getByRole('combobox', { name: 'Tax Group Code' }).fill(taxGroup);
-  //await iframe.getByRole('combobox', { name: 'Tax Group Code' }).waitFor('attached');
-  await expect(iframe.getByRole('combobox', { name: 'Tax Group Code' })).toBeFocused();
+  await iframe.getByLabel(taxGroup).click();
+  //await iframe.getByRole('textbox', { name: 'Unit Price Excl. Tax', exact: true }).click();
+  await iframe.getByRole('combobox', { name: 'Tax Group Code' }).waitFor('attached');
+  await iframe.getByRole('textbox', { name: 'Quantity', exact: true }).fill(quantity);
+  await iframe.getByRole('textbox', { name: 'Quantity', exact: true }).waitFor('attached');
+  await iframe.getByRole('textbox', { name: 'Unit Price Excl. Tax', exact: true }).fill(unitPrice);
+  await iframe.getByRole('textbox', { name: 'Unit Price Excl. Tax', exact: true }).waitFor('attached');
+  await iframe.getByLabel('Toggle focus mode').click();
+  const titleId = await iframe.locator('.title--DaOt1SlIHGgb2tatyyfP').innerText();
+  const regex = /(\S+)\s(.)\s(\S+)/;
+  const match = titleId.match(regex);
+  salesOrderId = match[1];
+  console.log('sales order id', salesOrderId);
   await iframe.getByRole('button', { name: 'Back' }).click();
   return salesOrderId;
 }
