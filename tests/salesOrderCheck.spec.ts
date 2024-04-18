@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { login } from './supportFunctions.spec';
 import { listView, lookForSection } from './supportFunctions.spec';
 
-export async function checkSalesOrderFunc(page: any, itemId: string, customerId: string, salesOrderId: string, documentName: string, section: string): Promise<void> {
+export async function checkSalesOrderFunc (page: any, itemId: string, customerId: string, salesOrderId: string, documentName: string, section: string): Promise<void> {
   const iframe = page.frameLocator('iframe[title="undefined"]');
   await lookForSection(section, page, iframe);
   await listView(iframe);
@@ -12,7 +12,9 @@ export async function checkSalesOrderFunc(page: any, itemId: string, customerId:
   let countedRows = await rows.locator('tr').count();
   while (countedRows > 10) {
     countedRows = await rows.locator('tr').count();
+    console.log('numlines:' ,countedRows)
   }
+
   //await iframe.getByTitle('Open record "' + salesOrderId + '"').waitFor();
   await iframe.getByTitle('Open record "' + salesOrderId + '"').click();
   await iframe.getByRole('button', { name: 'General" / "' }).waitFor();
