@@ -26,7 +26,6 @@ export async function createSalesOrderFunc(page: any, itemId: string, customerId
   const regex = /(\S+)\s(.)\s(\S+)/;
   const match = titleId.match(regex);
   salesOrderId = match[1];
-  console.log('sales order id', salesOrderId);
   await iframe.getByRole('button', { name: 'Back' }).click();
   return salesOrderId;
 }
