@@ -7,7 +7,7 @@ export async function checkCustomerFunc(page: any, customerId: string, email: st
   await listView(iframe);
   await iframe.locator('.ms-SearchBox').click();
   await iframe.getByPlaceholder('Search').fill(customerId);
-  await iframe.getByTitle('Open record "' + customerId + '"').waitFor();
+  await iframe.getByTitle('Open record "' + customerId + '"').waitFor({timeout: 2000});
   await iframe.getByTitle('Open record "' + customerId + '"').click();
   const checkedEmail = await iframe.getByLabel('Email', { exact: true }).inputValue();
   expect(checkedEmail).toBe(email);

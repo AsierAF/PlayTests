@@ -8,7 +8,7 @@ export async function checkItemFunc(page: any, itemId: string, unitVolume: strin
     await listView(iframe);
     await iframe.locator('.ms-SearchBox').click();
     await iframe.getByPlaceholder('Search').fill(itemId);
-    await iframe.getByTitle('Open record "' + itemId + '"').waitFor();
+    await iframe.getByTitle('Open record "' + itemId + '"').waitFor({timeout: 2000});
     await iframe.getByTitle('Open record "' + itemId + '"').click();
     const checkedVolume = await iframe.getByLabel('Unit Volume').inputValue();
     expect(checkedVolume.toString()).toBe(unitVolume.toString());

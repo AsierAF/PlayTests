@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { login } from './supportFunctions.spec';
-import { listView, lookForSection } from './supportFunctions.spec';
+import { listView, lookForSection,countRows } from './supportFunctions.spec';
 
 export async function checkSalesOrderFunc (page: any, itemId: string, customerId: string, salesOrderId: string, documentName: string, section: string): Promise<void> {
   const iframe = page.frameLocator('iframe[title="undefined"]');
@@ -8,16 +8,11 @@ export async function checkSalesOrderFunc (page: any, itemId: string, customerId
   await listView(iframe);
   await iframe.locator('.ms-SearchBox-iconContainer').click();
   await iframe.getByPlaceholder('Search').fill(salesOrderId);
-  const rows = await iframe.getByLabel('Sales Order List').locator('tbody');
-  let countedRows = await rows.locator('tr').count();
-  while (countedRows > 10) {
-    countedRows = await rows.locator('tr').count();
-    console.log('numlines:' ,countedRows)
-  }
+  await countRows(iframe);
 
   //await iframe.getByTitle('Open record "' + salesOrderId + '"').waitFor();
   await iframe.getByTitle('Open record "' + salesOrderId + '"').click();
-  await iframe.getByRole('button', { name: 'General" / "' }).waitFor();
+  await iframe.getByRole('button', { name: 'General" / "' }).waitFor({timeout: 5000});
   const checkedDocument = await iframe.getByRole('textbox', { name: 'External Document No.' }).inputValue();
   expect(checkedDocument.toLocaleLowerCase).toBe(documentName.toLocaleLowerCase);
   const checkedSalesOrder = await iframe.locator('.title--DaOt1SlIHGgb2tatyyfP').innerText();
