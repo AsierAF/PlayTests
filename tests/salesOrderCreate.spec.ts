@@ -11,14 +11,11 @@ export async function createSalesOrderFunc(page: any, itemId: string, customerId
   await iframe.getByRole('textbox', { name: 'External Document No.' }).fill(documentName);
   await iframe.getByLabel('Customer Name', { exact: true }).fill(customerId);
   await iframe.getByLabel('Toggle focus mode').click();
-  //await iframe.getByRole('heading', { name: 'Lines' }).waitFor();
   await iframe.getByRole('menuitemcheckbox', { name: 'Toggle filter' }).waitFor();
-
   await iframe.getByRole('combobox', { name: 'No.', exact: true }).fill(itemId);
   await iframe.getByRole('combobox', { name: 'No.', exact: true }).waitFor('attached');
   await iframe.getByRole('combobox', { name: 'Tax Group Code' }).fill(taxGroup);
   await iframe.getByLabel(taxGroup).click();
-  //await iframe.getByRole('textbox', { name: 'Unit Price Excl. Tax', exact: true }).click();
   await iframe.getByRole('combobox', { name: 'Tax Group Code' }).waitFor('attached');
   await iframe.getByRole('textbox', { name: 'Quantity', exact: true }).fill(quantity);
   await iframe.getByRole('textbox', { name: 'Quantity', exact: true }).waitFor('attached');
