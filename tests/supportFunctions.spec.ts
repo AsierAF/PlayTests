@@ -11,7 +11,7 @@ export async function login(page: any) {
 }
 
 export async function listView(iframe: any) {
-  await iframe.getByTitle('View layout options').waitFor({timeout: 2000});
+  await iframe.getByTitle('View layout options').waitFor({timeout: 5000});
   await iframe.getByTitle('View layout options').click();
   await iframe.getByTitle('Show as list').click();
 }
@@ -37,13 +37,16 @@ export async function countRows(iframe: any) {
       seconds++
   }, 1000);
 
-  const checkRows = async() => {
+  const checkRows = async () => {
     while (countedRows > 10 && seconds < 10) {
-      countedRows = rows.locator('tr').count();
-      await new Promise(resolve => setTimeout(resolve,1));
-    };
+      countedRows = await rows.locator('tr').count(); 
+      if (countedRows > 10) {
+        continue;
+      } else {
+        break;
+      }
+    }
     clearInterval(timer);
   };
   await checkRows();
-
 };
