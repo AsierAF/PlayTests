@@ -1,3 +1,7 @@
+import { errors } from "@playwright/test";
+
+
+export const timeoutValue = 5000;
 
 export async function login(page: any) {
   await page.goto('http://bcsandboxfinal/BC/?tenant=default');
@@ -22,31 +26,62 @@ export async function lookForSection(section: string, page: any, iframe: any) {
   await iframe.locator('.ms-itemName--fz_QEQj5YbI2XSdfnCIM.thm-font-size-small.thm-color--brand-primary_mintint_45--not_FCM').and(page.getByText(section, { exact: true })).click();
 }
 
-export async function timer(){
-  let seconds = 0;
-  const timer = setInterval(()=>{
-      seconds++
-  }, 1000)
-}
-
+/*
 export async function countRows(iframe: any) {
   const rows = await iframe.getByLabel('Sales Order List').locator('tbody');
   let countedRows = await rows.locator('tr').count();
   let seconds = 0;
-  const timer = setInterval(()=>{
-      seconds++
-  }, 1000);
+
+  const countSeconds = () => {
+    seconds++;
+    if (seconds < 5) {
+      setTimeout(countSeconds, 1000);
+    }
+  };
 
   const checkRows = async () => {
-    while (countedRows > 10 && seconds < 10) {
+    countSeconds();
+    while (countedRows > 0 && seconds < 5) {
       countedRows = await rows.locator('tr').count(); 
-      if (countedRows > 10) {
+      console.log('sec: ', seconds)
+      if (countedRows > 0) {
         continue;
       } else {
         break;
       }
     }
-    clearInterval(timer);
+  };
+
+  await checkRows();
+};
+*/
+
+export async function countRows(iframe: any) {
+  const rows = await iframe.getByLabel('Sales Order List').locator('tbody');
+  let countedRows = await rows.locator('tr').count();
+  let seconds = 0;
+  let flag = true;
+
+  const countSeconds = () => {
+    seconds++;
+    if (seconds >= 5) { 
+      flag = false;
+    } else {
+      setTimeout(countSeconds, 1000);
+    }
+  };
+
+  const checkRows = async () => {
+    countSeconds();
+    while (countedRows > 0 && flag) {
+      countedRows = await rows.locator('tr').count(); 
+      console.log('sec: ', seconds)
+      if (countedRows > 0) {
+        continue;
+      } else {
+        break;
+      }
+    }
   };
   await checkRows();
 };
