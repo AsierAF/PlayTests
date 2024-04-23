@@ -1,7 +1,7 @@
 import { errors } from "@playwright/test";
 
 
-export const timeoutValue = 5000;
+export const timeoutValue = 5;
 
 export async function login(page: any) {
   await page.goto('http://bcsandboxfinal/BC/?tenant=default');
@@ -11,13 +11,18 @@ export async function login(page: any) {
   await page.getByLabel('Contraseña:').fill('P@ssw0rd');
   await page.getByLabel('Contraseña:').press('Enter');
   await page.waitForLoadState();
-  //await page.getByText('Dynamics 365 Business Central').waitFor();
 }
 
 export async function listView(iframe: any) {
-  await iframe.getByTitle('View layout options').waitFor({timeout: 5000});
-  await iframe.getByTitle('View layout options').click();
-  await iframe.getByTitle('Show as list').click();
+  try {
+    await iframe.getByTitle('View layout options').waitFor({ timeout: timeoutValue }).catch(() => {
+      throw new Error('Timeout waiting for the list page to open');
+    });
+    await iframe.getByTitle('View layout options').click();
+    await iframe.getByTitle('Show as list').click();
+  } catch (error) {
+    throw error;
+  }
 }
 
 export async function lookForSection(section: string, page: any, iframe: any) {
@@ -64,7 +69,7 @@ export async function countRows(iframe: any) {
 
   const countSeconds = () => {
     seconds++;
-    if (seconds >= 5) { 
+    if (seconds >= 5) {
       flag = false;
     } else {
       setTimeout(countSeconds, 1000);
@@ -73,10 +78,9 @@ export async function countRows(iframe: any) {
 
   const checkRows = async () => {
     countSeconds();
-    while (countedRows > 0 && flag) {
-      countedRows = await rows.locator('tr').count(); 
-      console.log('sec: ', seconds)
-      if (countedRows > 0) {
+    while (countedRows > 10 && flag) {
+      countedRows = await rows.locator('tr').count();
+      if (countedRows > 10) {
         continue;
       } else {
         break;

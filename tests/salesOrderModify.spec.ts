@@ -13,7 +13,10 @@ export async function modifySalesOrderFunc(page: any, itemId: string, salesOrder
 
         //await iframe.getByTitle('Open record "' + salesOrderId + '"').waitFor();
         await iframe.getByTitle('Open record "' + salesOrderId + '"').click();
-        await iframe.getByRole('button', { name: 'General" / "' }).waitFor({ timeout: timeoutValue });
+        await iframe.getByRole('button', { name: 'General" / "' }).waitFor({ timeout: timeoutValue }).catch(() => {
+            throw new Error('Timeout waiting for the "General" button');
+        });
+
         const checkedSalesOrder = await iframe.locator('.title--DaOt1SlIHGgb2tatyyfP').innerText();
         const regex = /(\S+)\s(.)\s(\S+)/;
         const match = checkedSalesOrder.match(regex);
@@ -28,10 +31,12 @@ export async function modifySalesOrderFunc(page: any, itemId: string, salesOrder
         }
         await iframe.getByRole('textbox', { name: 'Quantity', exact: true }).clear();
         await iframe.getByRole('textbox', { name: 'Quantity', exact: true }).fill('20');
-        await iframe.getByRole('textbox', { name: 'Quantity', exact: true }).waitFor('attached', { timeout: timeoutValue });
+        await iframe.getByRole('textbox', { name: 'Quantity', exact: true }).waitFor('attached', { timeout: timeoutValue }).catch(() => {
+            throw new Error('Timeout waiting for the Quantity field');
+        });
         await iframe.getByRole('button', { name: 'Back' }).click();
     } catch (error) {
-        console.log('Timeout error!!!!!!!!!!!!!!!!!!!')
+        throw error; 
     }
 }
 
