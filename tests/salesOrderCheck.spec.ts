@@ -1,6 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { login } from './supportFunctions.spec';
-import { listView, lookForSection, countRows } from './supportFunctions.spec';
+import { countRows, login, listView, lookForSection} from './supportFunctions.spec';
 import { awaitSOToOpen, regexSalesOrderTitle, timeoutValue } from './supportVariables.spec';
 
 export async function checkSalesOrderFunc(page: any, itemId: string, customerId: string, salesOrderId: string, documentName: string, section: string): Promise<void> {
@@ -10,7 +9,9 @@ export async function checkSalesOrderFunc(page: any, itemId: string, customerId:
     await listView(iframe);
     await iframe.locator('.ms-SearchBox-iconContainer').click();
     await iframe.getByPlaceholder('Search').fill(salesOrderId);
+
     await countRows(iframe);
+
     await iframe.getByTitle('Open record "' + salesOrderId + '"').click();
     await iframe.getByRole('button', { name: 'General" / "' }).waitFor({ timeout: timeoutValue }).catch(() => { throw awaitSOToOpen; });
     const checkedDocument = await iframe.getByRole('textbox', { name: 'External Document No.' }).inputValue();

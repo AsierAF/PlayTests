@@ -11,3 +11,11 @@ export const awaitMainListError = new Error('Timeout waiting for the list page t
 
 export const regexSalesOrderTitle = /(\S+)\s(.)\s(\S+)/;
 export const timeoutValue = 5000;
+export let seconds = 0;
+export function setSeconds(value: number) {
+    seconds = value
+}
+export let flag = true;
+export function setFlag(value: boolean) {
+    flag = value;
+}
