@@ -42,7 +42,7 @@ export async function countRows(iframe: any) {
   async function checkRows() {
     setLimitSeconds(5)
     timer();
-    while (countedRows > 0 && flag) {
+    while (countedRows > 10 && flag) {
       countedRows = await rows.locator('tr').count();
     }
     setSeconds(0)

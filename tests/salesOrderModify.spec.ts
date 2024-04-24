@@ -11,7 +11,6 @@ export async function modifySalesOrderFunc(page: any, itemId: string, salesOrder
         await iframe.locator('.ms-SearchBox-iconContainer').click();
         await iframe.getByPlaceholder('Search').fill(salesOrderId);
         await countRows(iframe);
-
         //await iframe.getByTitle('Open record "' + salesOrderId + '"').waitFor();
         await iframe.getByTitle('Open record "' + salesOrderId + '"').click();
         await iframe.getByRole('button', { name: 'General" / "' }).waitFor({ timeout: timeoutValue }).catch(() => { throw awaitSOToOpen; });
