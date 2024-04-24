@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test';
-import { listView, lookForSection, timeoutValue } from './supportFunctions.spec';
+import { listView, lookForSection } from './supportFunctions.spec';
+import { awaitCustomerError, timeoutValue } from './supportVariables.spec';
 
 export async function checkCustomerFunc(page: any, customerId: string, email: string, section: string): Promise<void> {
   try {
@@ -8,9 +9,7 @@ export async function checkCustomerFunc(page: any, customerId: string, email: st
     await listView(iframe);
     await iframe.locator('.ms-SearchBox').click();
     await iframe.getByPlaceholder('Search').fill(customerId);
-    await iframe.getByTitle('Open record "' + customerId + '"').waitFor({ timeout: timeoutValue }).catch(() => {
-      throw new Error('Timeout waiting for the item to open');
-    });
+    await iframe.getByTitle('Open record "' + customerId + '"').waitFor({ timeout: timeoutValue }).catch(() => { throw awaitCustomerError; });
     await iframe.getByTitle('Open record "' + customerId + '"').click();
     const checkedEmail = await iframe.getByLabel('Email', { exact: true }).inputValue();
     expect(checkedEmail).toBe(email);

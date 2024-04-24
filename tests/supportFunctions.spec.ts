@@ -1,7 +1,4 @@
-import { errors } from "@playwright/test";
-
-
-export const timeoutValue = 5;
+import { awaitMainListError, timeoutValue } from "./supportVariables.spec";
 
 export async function login(page: any) {
   await page.goto('http://bcsandboxfinal/BC/?tenant=default');
@@ -15,9 +12,7 @@ export async function login(page: any) {
 
 export async function listView(iframe: any) {
   try {
-    await iframe.getByTitle('View layout options').waitFor({ timeout: timeoutValue }).catch(() => {
-      throw new Error('Timeout waiting for the list page to open');
-    });
+    await iframe.getByTitle('View layout options').waitFor({ timeout: timeoutValue }).catch(() => {throw awaitMainListError;});
     await iframe.getByTitle('View layout options').click();
     await iframe.getByTitle('Show as list').click();
   } catch (error) {
@@ -30,36 +25,6 @@ export async function lookForSection(section: string, page: any, iframe: any) {
   await iframe.getByRole('textbox', { name: 'Tell me what you want to do' }).fill(section);
   await iframe.locator('.ms-itemName--fz_QEQj5YbI2XSdfnCIM.thm-font-size-small.thm-color--brand-primary_mintint_45--not_FCM').and(page.getByText(section, { exact: true })).click();
 }
-
-/*
-export async function countRows(iframe: any) {
-  const rows = await iframe.getByLabel('Sales Order List').locator('tbody');
-  let countedRows = await rows.locator('tr').count();
-  let seconds = 0;
-
-  const countSeconds = () => {
-    seconds++;
-    if (seconds < 5) {
-      setTimeout(countSeconds, 1000);
-    }
-  };
-
-  const checkRows = async () => {
-    countSeconds();
-    while (countedRows > 0 && seconds < 5) {
-      countedRows = await rows.locator('tr').count(); 
-      console.log('sec: ', seconds)
-      if (countedRows > 0) {
-        continue;
-      } else {
-        break;
-      }
-    }
-  };
-
-  await checkRows();
-};
-*/
 
 export async function countRows(iframe: any) {
   const rows = await iframe.getByLabel('Sales Order List').locator('tbody');
@@ -80,12 +45,66 @@ export async function countRows(iframe: any) {
     countSeconds();
     while (countedRows > 10 && flag) {
       countedRows = await rows.locator('tr').count();
-      if (countedRows > 10) {
-        continue;
-      } else {
-        break;
-      }
     }
   };
   await checkRows();
 };
+
+/*export async function countRows2(iframe: any) {
+  const rows = await iframe.getByLabel('Sales Order List').locator('tbody');
+  let countedRows = await rows.locator('tr').count();
+
+  let timeoutReached = await countSeconds(5);
+
+  while (countedRows > 10 || timeoutReached === false) {
+    countedRows = await rows.locator('tr').count();
+    console.log('Rows counted:', countedRows);
+  }
+}
+
+/*export const countSeconds2 = (limitSeconds: number) => {
+  return new Promise<boolean>((resolve) => {
+    let seconds = 0;
+    const count = () => {
+      seconds++;
+      if (seconds >= limitSeconds) {
+        resolve(true);
+      } else {
+        setTimeout(count, 1000);
+      }
+    };
+    setTimeout(count, 1000);
+  });
+}; 
+
+export const countSeconds3 = (limitSeconds: number) => {
+  return new Promise<boolean>((resolve) => {
+    let seconds = 0;
+    const intervalId = setInterval(() => {
+      seconds++;
+      if (seconds >= limitSeconds) {
+        clearInterval(intervalId);
+        resolve(true);
+      }
+    }, 1000);
+  });
+};*/
+
+
+export async function modifyData(iframe: any) {
+    let savingIconVisible = false;
+    await iframe.getByRole('textbox', { name: 'Quantity', exact: true }).clear();
+    await iframe.getByRole('textbox', { name: 'Quantity', exact: true }).fill('50');
+    await iframe.getByRole('textbox', { name: 'Quantity', exact: true }).press('Tab');
+    const savingText = await iframe.getByTitle('Your data is being saved...').innerText();
+    if (savingText == 'Saving...') {
+      savingIconVisible = true;
+    } else {
+      await modifyData(iframe);
+    }
+    let savedText = await iframe.getByTitle('Your data is saved now and the page can be closed.').isVisible();
+    while(savingIconVisible && !savedText){
+      savedText = await iframe.getByTitle('Your data is saved now and the page can be closed.').isVisible();
+    }
+}
+

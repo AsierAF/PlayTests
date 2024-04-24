@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
-import { login, timeoutValue } from './supportFunctions.spec';
+import { login } from './supportFunctions.spec';
 import { listView, lookForSection, countRows } from './supportFunctions.spec';
+import { awaitSOToOpen, regexSalesOrderTitle, timeoutValue } from './supportVariables.spec';
 
 export async function checkSalesOrderFunc(page: any, itemId: string, customerId: string, salesOrderId: string, documentName: string, section: string): Promise<void> {
   try {
@@ -10,16 +11,12 @@ export async function checkSalesOrderFunc(page: any, itemId: string, customerId:
     await iframe.locator('.ms-SearchBox-iconContainer').click();
     await iframe.getByPlaceholder('Search').fill(salesOrderId);
     await countRows(iframe);
-
     await iframe.getByTitle('Open record "' + salesOrderId + '"').click();
-    await iframe.getByRole('button', { name: 'General" / "' }).waitFor({ timeout: timeoutValue }).catch(() => {
-      throw new Error('Timeout waiting for the sales order to open');
-    });
+    await iframe.getByRole('button', { name: 'General" / "' }).waitFor({ timeout: timeoutValue }).catch(() => { throw awaitSOToOpen; });
     const checkedDocument = await iframe.getByRole('textbox', { name: 'External Document No.' }).inputValue();
     expect(checkedDocument.toLocaleLowerCase).toBe(documentName.toLocaleLowerCase);
     const checkedSalesOrder = await iframe.locator('.title--DaOt1SlIHGgb2tatyyfP').innerText();
-    const regex = /(\S+)\s(.)\s(\S+)/;
-    const match = checkedSalesOrder.match(regex);
+    const match = checkedSalesOrder.match(regexSalesOrderTitle);
     const extractedId = match[1];
     expect(extractedId).toBe(salesOrderId);
     await iframe.getByLabel('Choose a value for Customer Name').click();

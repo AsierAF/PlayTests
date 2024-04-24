@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
-import { login, timeoutValue } from './supportFunctions.spec';
+import { login, modifyData } from './supportFunctions.spec';
 import { listView, lookForSection, countRows } from './supportFunctions.spec';
+import { awaitSOToOpen, regexSalesOrderTitle, timeoutValue } from './supportVariables.spec';
 
 export async function modifySalesOrderFunc(page: any, itemId: string, salesOrderId: string, section: string): Promise<void> {
     try {
@@ -13,13 +14,9 @@ export async function modifySalesOrderFunc(page: any, itemId: string, salesOrder
 
         //await iframe.getByTitle('Open record "' + salesOrderId + '"').waitFor();
         await iframe.getByTitle('Open record "' + salesOrderId + '"').click();
-        await iframe.getByRole('button', { name: 'General" / "' }).waitFor({ timeout: timeoutValue }).catch(() => {
-            throw new Error('Timeout waiting for the "General" button');
-        });
-
+        await iframe.getByRole('button', { name: 'General" / "' }).waitFor({ timeout: timeoutValue }).catch(() => { throw awaitSOToOpen; });
         const checkedSalesOrder = await iframe.locator('.title--DaOt1SlIHGgb2tatyyfP').innerText();
-        const regex = /(\S+)\s(.)\s(\S+)/;
-        const match = checkedSalesOrder.match(regex);
+        const match = checkedSalesOrder.match(regexSalesOrderTitle);
         const extractedId = match[1];
         expect(extractedId).toBe(salesOrderId);
         await iframe.getByLabel('Toggle focus mode').click();
@@ -29,19 +26,14 @@ export async function modifySalesOrderFunc(page: any, itemId: string, salesOrder
         } else {
             await iframe.getByRole('textbox', { name: itemId }).click();
         }
-        await iframe.getByRole('textbox', { name: 'Quantity', exact: true }).clear();
-        await iframe.getByRole('textbox', { name: 'Quantity', exact: true }).fill('20');
-        await iframe.getByRole('textbox', { name: 'Quantity', exact: true }).waitFor('attached', { timeout: timeoutValue }).catch(() => {
-            throw new Error('Timeout waiting for the Quantity field');
-        });
-        await iframe.getByRole('button', { name: 'Back' }).click();
+        await modifyData(iframe);
     } catch (error) {
-        throw error; 
+        throw error;
     }
 }
 
 test('Check Sales Order 2', async ({ page }) => {
-    const itemId = '1137';
+    const itemId = '1136';
     const salesOrder = 'S-ORD101285';
     const salesOrderSection = 'Sales Orders';
     await login(page);
