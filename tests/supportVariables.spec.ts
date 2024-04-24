@@ -19,3 +19,7 @@ export let flag = true;
 export function setFlag(value: boolean) {
     flag = value;
 }
+export let limitSeconds = 0
+export function setLimitSeconds(value:number){
+    limitSeconds = value
+}

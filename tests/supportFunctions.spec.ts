@@ -1,4 +1,4 @@
-import { awaitMainListError, timeoutValue, seconds, flag, setSeconds, setFlag } from "./supportVariables.spec";
+import { awaitMainListError, timeoutValue, seconds, flag, setSeconds, setFlag, limitSeconds, setLimitSeconds} from "./supportVariables.spec";
 
 export async function login(page: any) {
   await page.goto('http://bcsandboxfinal/BC/?tenant=default');
@@ -26,13 +26,11 @@ export async function lookForSection(section: string, page: any, iframe: any) {
   await iframe.locator('.ms-itemName--fz_QEQj5YbI2XSdfnCIM.thm-font-size-small.thm-color--brand-primary_mintint_45--not_FCM').and(page.getByText(section, { exact: true })).click();
 }
 
-
-export function timer(limitSeconds: number) {
+export function timer() {
   setSeconds(seconds + 1)
   console.log('secs: ', seconds)
   if (seconds >= limitSeconds) {
     setFlag(false);
-    setSeconds(0)
   } else {
     setTimeout(timer, 1000);
   }
@@ -42,11 +40,12 @@ export async function countRows(iframe: any) {
   const rows = await iframe.getByLabel('Sales Order List').locator('tbody');
   let countedRows = await rows.locator('tr').count();
   async function checkRows() {
-    timer(5);
-    while (countedRows > 10 && flag) {
+    setLimitSeconds(5)
+    timer();
+    while (countedRows > 0 && flag) {
       countedRows = await rows.locator('tr').count();
-      console.log('rows: ', countedRows);
     }
+    setSeconds(0)
     setFlag(true)
   }
   await checkRows();
@@ -55,7 +54,8 @@ export async function countRows(iframe: any) {
 export async function modifyData(iframe: any) {
   let savingIconVisible = false;
   async function checkForSaving() {
-    timer(8)
+    setLimitSeconds(8)
+    timer()
     await iframe.getByRole('textbox', { name: 'Quantity', exact: true }).clear();
     await iframe.getByRole('textbox', { name: 'Quantity', exact: true }).fill('30');
     await iframe.getByRole('textbox', { name: 'Quantity', exact: true }).press('Tab');
