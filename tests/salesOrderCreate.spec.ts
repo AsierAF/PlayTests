@@ -1,14 +1,14 @@
 import { lookForSection } from './supportFunctions.spec';
-import { awaitDataAttachedError, awaitItemTableError, awaitSOToOpen, regexSalesOrderTitle, timeoutValue } from './supportVariables.spec';
+import { awaitDataAttachedError, awaitItemTableError, awaitSOToOpenError, regexSalesOrderTitle, timeoutValue } from './supportVariables.spec';
 
 export async function createSalesOrderFunc(page: any, itemId: string, customerId: string, salesOrderId: string, documentName: string, quantity: string, unitPrice: string, taxGroup: string, section: string): Promise<string> {
   try {
     const iframe = page.frameLocator('iframe[title="undefined"]');
     await lookForSection(section, page, iframe);
-    await iframe.getByRole('button', { name: 'Sales Orders:', exact: true }).waitFor({ timeout: timeoutValue }).catch(() => { throw awaitSOToOpen; });
+    await iframe.getByRole('button', { name: 'Sales Orders:', exact: true }).waitFor({ timeout: timeoutValue }).catch(() => { throw awaitSOToOpenError; });
     await iframe.getByRole('menuitem', { name: 'New' }).click();
     await iframe.getByRole('textbox', { name: 'Contact (Blank)' }).click();
-    await iframe.getByRole('heading', { name: 'Sales Order' }).waitFor({ timeout: timeoutValue }).catch(() => { throw awaitSOToOpen; });
+    await iframe.getByRole('heading', { name: 'Sales Order' }).waitFor({ timeout: timeoutValue }).catch(() => { throw awaitSOToOpenError; });
     await iframe.getByRole('textbox', { name: 'External Document No.' }).fill(documentName);
     await iframe.getByLabel('Customer Name', { exact: true }).fill(customerId);
     await iframe.getByLabel('Toggle focus mode').click();

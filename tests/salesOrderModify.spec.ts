@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { login, modifyData } from './supportFunctions.spec';
 import { listView, lookForSection, countRows } from './supportFunctions.spec';
-import { awaitSOToOpen, regexSalesOrderTitle, timeoutValue } from './supportVariables.spec';
+import { awaitSOToOpenError, regexSalesOrderTitle, timeoutValue } from './supportVariables.spec';
 
 export async function modifySalesOrderFunc(page: any, itemId: string, salesOrderId: string, section: string): Promise<void> {
     try {
@@ -13,7 +13,7 @@ export async function modifySalesOrderFunc(page: any, itemId: string, salesOrder
         await countRows(iframe);
         //await iframe.getByTitle('Open record "' + salesOrderId + '"').waitFor();
         await iframe.getByTitle('Open record "' + salesOrderId + '"').click();
-        await iframe.getByRole('button', { name: 'General" / "' }).waitFor({ timeout: timeoutValue }).catch(() => { throw awaitSOToOpen; });
+        await iframe.getByRole('button', { name: 'General" / "' }).waitFor({ timeout: timeoutValue }).catch(() => { throw awaitSOToOpenError; });
         const checkedSalesOrder = await iframe.locator('.title--DaOt1SlIHGgb2tatyyfP').innerText();
         const match = checkedSalesOrder.match(regexSalesOrderTitle);
         const extractedId = match[1];

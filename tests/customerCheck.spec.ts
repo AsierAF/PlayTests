@@ -1,6 +1,7 @@
-import { expect } from '@playwright/test';
+import { expect  } from '@playwright/test';
 import { listView, lookForSection } from './supportFunctions.spec';
 import { awaitCustomerError, timeoutValue } from './supportVariables.spec';
+
 
 export async function checkCustomerFunc(page: any, customerId: string, email: string, section: string): Promise<void> {
   try {
@@ -20,3 +21,4 @@ export async function checkCustomerFunc(page: any, customerId: string, email: st
   }
 
 }
+

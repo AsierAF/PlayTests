@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { countRows, login, listView, lookForSection} from './supportFunctions.spec';
-import { awaitSOToOpen, regexSalesOrderTitle, timeoutValue } from './supportVariables.spec';
+import { awaitSOToOpenError, regexSalesOrderTitle, timeoutValue } from './supportVariables.spec';
 
 export async function checkSalesOrderFunc(page: any, itemId: string, customerId: string, salesOrderId: string, documentName: string, section: string): Promise<void> {
   try {
@@ -13,7 +13,7 @@ export async function checkSalesOrderFunc(page: any, itemId: string, customerId:
     await countRows(iframe);
 
     await iframe.getByTitle('Open record "' + salesOrderId + '"').click();
-    await iframe.getByRole('button', { name: 'General" / "' }).waitFor({ timeout: timeoutValue }).catch(() => { throw awaitSOToOpen; });
+    await iframe.getByRole('button', { name: 'General" / "' }).waitFor({ timeout: timeoutValue }).catch(() => { throw awaitSOToOpenError; });
     const checkedDocument = await iframe.getByRole('textbox', { name: 'External Document No.' }).inputValue();
     expect(checkedDocument.toLocaleLowerCase).toBe(documentName.toLocaleLowerCase);
     const checkedSalesOrder = await iframe.locator('.title--DaOt1SlIHGgb2tatyyfP').innerText();

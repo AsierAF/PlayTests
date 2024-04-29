@@ -1,6 +1,6 @@
 export const awaitCustomerError = new Error('Timeout waiting for the customer to open');
 export const awaitItemError = new Error('Timeout waiting for the item to open');
-export const awaitSOToOpen = new Error('Timeout waiting for the sales order to open');
+export const awaitSOToOpenError = new Error('Timeout waiting for the sales order to open');
 export const awaitHeaderError = new Error('Timeout waiting for the header of the page');
 export const awaitIdCustomerError = new Error('Timeout waiting for the id of the customer');
 export const awaitIdItemError = new Error('Timeout waiting for the id of the item');
@@ -11,15 +11,11 @@ export const awaitMainListError = new Error('Timeout waiting for the list page t
 
 export const regexSalesOrderTitle = /(\S+)\s(.)\s(\S+)/;
 export const timeoutValue = 5000;
-export let seconds = 0;
-export function setSeconds(value: number) {
-    seconds = value
-}
+
 export let flag = true;
-export function setFlag(value: boolean) {
-    flag = value;
+export function setFlagTrue() {
+    flag = true;
 }
-export let limitSeconds = 0
-export function setLimitSeconds(value:number){
-    limitSeconds = value
+export function setFlagFalse(){
+    flag = false
 }
