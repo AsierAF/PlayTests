@@ -6,8 +6,18 @@ import { checkSalesOrderFunc } from './salesOrderCheck.spec';
 import { createItemFunc } from './itemCreate.spec';
 import { checkItemFunc } from './itemCheck.spec';
 import { login } from './supportFunctions.spec';
+import { Item } from './itemClass.spec';
 
 test.describe('allTest', () => {
+  const itemData = new Item({
+    description: "claseItem",
+    shelfNo: 10,
+    unitVolume: 20,
+    unitCost: 30,
+    unitPrice: 40,
+    vendorItemNo: 50
+  })
+
   let itemId: string;
   let customerId: string;
   let salesOrderId: string;
@@ -21,7 +31,7 @@ test.describe('allTest', () => {
   const unitPrice = '150';
   const taxGroup = 'LABOR';
   //const frLoc = 'iframe[title="undefined"]';
-  
+
   test.beforeEach('Open & Login', async ({ page }) => {
     await login(page);
   });
@@ -32,11 +42,24 @@ test.describe('allTest', () => {
   });
 
   test('Create Item', async ({ page }) => {
-    itemId = await createItemFunc(page, itemId, unitVolume, itemSection);
+    itemId = await createItemFunc(page, itemId, itemData.getUnitVolume.toString(), itemSection);
+    itemData.setNo = itemId
+    console.log('Clase Item')
+    console.log('No: ', itemData.getNo)
+    console.log('Descripcion: ',  itemData.getDescription)
+    console.log('Unit Volume: ', itemData.getUnitVolume)
+    console.log('Shelf No: ', itemData.getShelfNo)
+    console.log('Unit Cost: ', itemData.getUnitCost)
   });
 
   test('Check Item', async ({ page }) => {
-    await checkItemFunc(page, itemId, unitVolume, itemSection);
+    await checkItemFunc(page, itemData.getNo, itemData.getUnitVolume.toString(), itemSection);
+    console.log('Clase Item Check')
+    console.log('No: ', itemData.getNo)
+    console.log('Descripcion: ',  itemData.getDescription)
+    console.log('Unit Volume: ', itemData.getUnitVolume)
+    console.log('Shelf No: ', itemData.getShelfNo)
+    console.log('Unit Cost: ', itemData.getUnitCost)
   });
 
   test('Create Customer', async ({ page }) => {
@@ -48,7 +71,7 @@ test.describe('allTest', () => {
   });
 
   test('Create Sales Order', async ({ page }) => {
-    salesOrderId = await createSalesOrderFunc(page, itemId, customerId, salesOrderId, documentName,quantity,unitPrice,taxGroup ,salesOrderSection);
+    salesOrderId = await createSalesOrderFunc(page, itemId, customerId, salesOrderId, documentName, quantity, unitPrice, taxGroup, salesOrderSection);
   });
 
   test('Check Sales Order', async ({ page }) => {
