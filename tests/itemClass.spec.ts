@@ -8,6 +8,8 @@ export class Item {
     private unitCost: number;
     private unitPrice: number;
     private vendorItemNo: number;
+    private quantity: number;
+    private taxGroupCode: string;
 
     /*constructor(no: string, description: string, shelfNo: number, unitVolume: number,
          unitCost: number, unitPrice: number, vendorItemNo: number) {
@@ -21,7 +23,7 @@ export class Item {
      }*/
 
     constructor({ no = "", description = "", shelfNo = 0, unitVolume = 0,
-        unitCost = 0, unitPrice = 0, vendorItemNo = 0 }) {
+        unitCost = 0, unitPrice = 0, vendorItemNo = 0, quantity = 0, taxGroupCode = "" }) {
         this.no = no;
         this.description = description;
         this.shelfNo = shelfNo;
@@ -29,6 +31,8 @@ export class Item {
         this.unitCost = unitCost;
         this.unitPrice = unitPrice;
         this.vendorItemNo = vendorItemNo;
+        this.quantity = quantity;
+        this.taxGroupCode = taxGroupCode;
     }
 
     get getNo() {
@@ -87,8 +91,24 @@ export class Item {
         this.vendorItemNo = value;
     }
 
+    get getQuantity(){
+        return this.quantity;
+    }
+
+    set setQuantity(value: number){
+        this.quantity = value;
+    }
+
+    get getTaxGroupCode(){
+        return this.taxGroupCode;
+    }
+
+    set setTaxGroupCode(value:string){
+        this.taxGroupCode = value;
+    }
+
     restoreData({ no = this.no , description = this.description , shelfNo = this.shelfNo, unitVolume = this.unitVolume,
-        unitCost = this.unitCost, unitPrice = this.unitPrice, vendorItemNo = this.vendorItemNo }) {
+        unitCost = this.unitCost, unitPrice = this.unitPrice, vendorItemNo = this.vendorItemNo , quantity = this.quantity, taxGroupCode = this.taxGroupCode}) {
         this.no = no;
         this.description = description;
         this.shelfNo = shelfNo;
@@ -96,6 +116,8 @@ export class Item {
         this.unitCost = unitCost;
         this.unitPrice = unitPrice;
         this.vendorItemNo = vendorItemNo;
+        this.quantity = quantity;
+        this.taxGroupCode = taxGroupCode;
     }
 
     deleteItem(){
@@ -106,6 +128,8 @@ export class Item {
         this.unitCost = 0;
         this.unitPrice = 0;
         this.vendorItemNo = 0;
+        this.quantity = 0;
+        this.taxGroupCode = "";
     }
 }
 
