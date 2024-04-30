@@ -1,3 +1,4 @@
+import { expect } from "@playwright/test";
 import test from "node:test";
 
 export class Item2 {
@@ -40,6 +41,7 @@ export class Item2 {
     }
 
     get getDescription() {
+
         return this.description
     }
 
@@ -127,19 +129,11 @@ test('Class Item Test', async ({ }) => {
         });
 
         it.setUnitCost = 12
-        console.log(it.getUnitCost)
 
         it.restoreData({ "shelfNo": 3, "unitVolume": 4 })
-        console.log(it.getUnitCost)
-        console.log(it.getDescription)
-        console.log(it.getShelfNo)
-        console.log(it.getUnitVolume)
 
         it.deleteItem()
-        console.log(it.getUnitCost)
-        console.log(it.getDescription)
-        console.log(it.getShelfNo)
-        console.log(it.getUnitVolume)
+
     }
     createItem()
 });
