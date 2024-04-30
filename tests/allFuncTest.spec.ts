@@ -6,7 +6,7 @@ import { checkSalesOrderFunc } from './salesOrderCheck.spec';
 import { createItemFunc } from './itemCreate.spec';
 import { checkItemFunc } from './itemCheck.spec';
 import { login } from './supportFunctions.spec';
-import { Item } from './itemClass.spec';
+import { Item } from '../classes/item.class';
 
 test.describe('allTest', () => {
   const itemData = new Item({
