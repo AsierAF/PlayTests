@@ -9,15 +9,9 @@ import { login } from './supportFunctions.spec';
 import { Item } from '../classes/item.class';
 
 test.describe('allTest', () => {
-  const itemData = new Item({
-    description: "claseItem",
-    shelfNo: 10,
-    unitVolume: 20,
-    unitCost: 30,
-    unitPrice: 40,
-    vendorItemNo: 50
-  })
+ 
 
+  
   let itemId: string;
   let customerId: string;
   let salesOrderId: string;
@@ -42,6 +36,14 @@ test.describe('allTest', () => {
   });
 
   test('Create Item', async ({ page }) => {
+    const itemData = new Item({
+      description: "claseItem",
+      shelfNo: 10,
+      unitVolume: 20,
+      unitCost: 30,
+      unitPrice: 40,
+      vendorItemNo: 50
+    }, page)
     itemId = await createItemFunc(page, itemId, itemData.getUnitVolume.toString(), itemSection);
     itemData.setNo = itemId
     console.log('Clase Item')
@@ -53,6 +55,14 @@ test.describe('allTest', () => {
   });
 
   test('Check Item', async ({ page }) => {
+    const itemData = new Item({
+      description: "claseItem",
+      shelfNo: 10,
+      unitVolume: 20,
+      unitCost: 30,
+      unitPrice: 40,
+      vendorItemNo: 50
+    }, page)
     await checkItemFunc(page, itemData.getNo, itemData.getUnitVolume.toString(), itemSection);
     console.log('Clase Item Check')
     console.log('No: ', itemData.getNo)

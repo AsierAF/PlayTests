@@ -1,4 +1,6 @@
-import test from "node:test";
+import { test } from '@playwright/test';
+import { lookForSection, listView } from '../tests/supportFunctions.spec';
+import { awaitHeaderError, awaitIdItemError, timeoutValue, awaitItemError } from '../tests/supportVariables.spec';
 
 export class Item {
     private description: string;
@@ -10,6 +12,8 @@ export class Item {
     private vendorItemNo: number;
     private quantity: number;
     private taxGroupCode: string;
+    private page:any
+    private section = 'Items';
 
     /*constructor(no: string, description: string, shelfNo: number, unitVolume: number,
          unitCost: number, unitPrice: number, vendorItemNo: number) {
@@ -23,7 +27,7 @@ export class Item {
      }*/
 
     constructor({ no = "", description = "", shelfNo = 0, unitVolume = 0,
-        unitCost = 0, unitPrice = 0, vendorItemNo = 0, quantity = 0, taxGroupCode = "" }) {
+        unitCost = 0, unitPrice = 0, vendorItemNo = 0, quantity = 0, taxGroupCode = "" }, page:any) {
         this.no = no;
         this.description = description;
         this.shelfNo = shelfNo;
@@ -33,7 +37,57 @@ export class Item {
         this.vendorItemNo = vendorItemNo;
         this.quantity = quantity;
         this.taxGroupCode = taxGroupCode;
+        this.page = page;
     }
+
+    private async login() {
+        await this.page.goto('http://bcsandboxfinal/BC/?tenant=default');
+        await this.page.getByLabel('Nombre usuario:').click();
+        await this.page.getByLabel('Nombre usuario:').fill('admin');
+        await this.page.getByLabel('Nombre usuario:').press('Tab');
+        await this.page.getByLabel('Contraseña:').fill('P@ssw0rd');
+        await this.page.getByLabel('Contraseña:').press('Enter');
+        await this.page.waitForLoadState();
+    }
+
+    async createItem() {
+        try {
+            await this.login()
+            const iframe = this.page.frameLocator('iframe[title="undefined"]');
+            await lookForSection(this.section, this.page, iframe);
+            await iframe.getByRole('button', { name: 'New', exact: true }).click();
+            await iframe.getByRole('heading', { name: 'Select a template for a new' }).waitFor({ timeout: timeoutValue }).catch(() => { throw awaitHeaderError; });
+            await iframe.getByRole('button', { name: 'OK' }).click();
+            await iframe.locator('.title--DaOt1SlIHGgb2tatyyfP').waitFor({ timeout: timeoutValue }).catch(() => { throw awaitIdItemError; });
+            this.no = await iframe.locator('.title--DaOt1SlIHGgb2tatyyfP').innerText();
+            await iframe.getByRole('textbox', { name: 'Description' }).fill(this.description);
+            await iframe.getByLabel('Unit Volume').fill(this.unitVolume.toString());
+            await iframe.getByRole('button', { name: 'Back' }).click();
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    private async reachItem(no: string, page: any, section: string, iframe: any) {
+        await lookForSection(section, page, iframe);
+        await listView(iframe);
+        await iframe.locator('.ms-SearchBox').click();
+        await iframe.getByPlaceholder('Search').fill(no);
+        await iframe.getByTitle('Open record "' + no + '"').waitFor({ timeout: timeoutValue }).catch(() => { throw awaitItemError; });
+        await iframe.getByTitle('Open record "' + no + '"').click();
+    }
+
+    async deleteItem(no: string, page: any, section: string) {
+        try {
+            const iframe = page.frameLocator('iframe[title="undefined"]');
+            this.reachItem(no,page,section,iframe)
+            await iframe.getByRole('button', { name: 'Delete the information' }).click();
+            await iframe.getByRole('button', { name: 'Yes' }).click();
+        } catch (error) {
+            throw error;
+        }
+    }
+
 
     get getNo() {
         return this.no
@@ -91,24 +145,24 @@ export class Item {
         this.vendorItemNo = value;
     }
 
-    get getQuantity(){
+    get getQuantity() {
         return this.quantity;
     }
 
-    set setQuantity(value: number){
+    set setQuantity(value: number) {
         this.quantity = value;
     }
 
-    get getTaxGroupCode(){
+    get getTaxGroupCode() {
         return this.taxGroupCode;
     }
 
-    set setTaxGroupCode(value:string){
+    set setTaxGroupCode(value: string) {
         this.taxGroupCode = value;
     }
 
-    restoreData({ no = this.no , description = this.description , shelfNo = this.shelfNo, unitVolume = this.unitVolume,
-        unitCost = this.unitCost, unitPrice = this.unitPrice, vendorItemNo = this.vendorItemNo , quantity = this.quantity, taxGroupCode = this.taxGroupCode}) {
+    restoreDataItem({ no = this.no, description = this.description, shelfNo = this.shelfNo, unitVolume = this.unitVolume,
+        unitCost = this.unitCost, unitPrice = this.unitPrice, vendorItemNo = this.vendorItemNo, quantity = this.quantity, taxGroupCode = this.taxGroupCode }) {
         this.no = no;
         this.description = description;
         this.shelfNo = shelfNo;
@@ -119,51 +173,22 @@ export class Item {
         this.quantity = quantity;
         this.taxGroupCode = taxGroupCode;
     }
-
-    deleteItem(){
-        this.no = "";
-        this.description = "";
-        this.shelfNo = 0;
-        this.unitVolume = 0;
-        this.unitCost = 0;
-        this.unitPrice = 0;
-        this.vendorItemNo = 0;
-        this.quantity = 0;
-        this.taxGroupCode = "";
-    }
 }
 
- 
 
 
-test('Class Item Test', async ({ }) => {
-    function createItem() {
-        //let it = new Item({ "description": "tut" })
 
-        const it = new Item({
-            no: "1010",
-            description: "item precioso",
-            shelfNo: 10,
-            unitVolume: 20,
-            unitCost: 30,
-            unitPrice: 40,
-            vendorItemNo: 50
-        });
+test('Class Item Test', async ({ page }) => {
+    
+    const it = new Item({
+        no: "1010",
+        description: "item precioso",
+        shelfNo: 10,
+        unitVolume: 20,
+        unitCost: 30,
+        unitPrice: 40,
+        vendorItemNo: 50
+    }, page);
 
-        it.setUnitCost = 12
-        console.log(it.getUnitCost)
-
-        it.restoreData({ "shelfNo": 3, "unitVolume": 4 })
-        console.log(it.getUnitCost)
-        console.log(it.getDescription)
-        console.log(it.getShelfNo)
-        console.log(it.getUnitVolume)
-
-        it.deleteItem()
-        console.log(it.getUnitCost)
-        console.log(it.getDescription)
-        console.log(it.getShelfNo)
-        console.log(it.getUnitVolume)
-    }
-    createItem()
+    await it.createItem()
 });
