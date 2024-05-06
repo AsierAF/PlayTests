@@ -1,5 +1,5 @@
 import { test } from '@playwright/test';
-import { lookForSection, listView, login } from '../tests/supportFunctions.spec';
+import { lookForSection, listView, login, timer } from '../tests/supportFunctions.spec';
 import { awaitHeaderError, awaitIdItemError, timeoutValue, awaitItemError } from '../tests/supportVariables.spec';
 
 export class Item {
@@ -55,7 +55,6 @@ export class Item {
 
     async createItem() {
         try {
-            
             await lookForSection(this.section, this.page, this.iframe);
             await this.iframe.getByRole('button', { name: 'New', exact: true }).click();
             await this.iframe.getByRole('heading', { name: 'Select a template for a new' }).waitFor({ timeout: timeoutValue }).catch(() => { throw awaitHeaderError; });
@@ -77,10 +76,21 @@ export class Item {
             await this.reachItem(no)
             await this.iframe.getByRole('button', { name: 'Delete the information' }).waitFor({ timeout: timeoutValue }).catch(() => { throw awaitItemError });
             await this.iframe.getByRole('button', { name: 'Delete the information' }).click();
+            await this.iframe.getByRole('button', { name: 'Yes' }).waitFor({ timeout: timeoutValue }).catch(() => { throw awaitItemError });
             await this.iframe.getByRole('button', { name: 'Yes' }).click();
+            await this.iframe.getByRole('button', { name: 'Toggle wide layout' }).waitFor({ timeout: timeoutValue }).catch(() => { throw awaitItemError });
+            const errorLabel = await this.iframe.getByLabel('The page has an error.');
+            if (await errorLabel.isVisible()) {
+                await this.iframe.getByLabel('The page has an error.').click();
+                throw new Error('Error: The page has an error.');
+            }
         } catch (error) {
             throw error;
         }
+    }
+
+    async checkIfDeleted () {
+        
     }
 
     async deleteCurrentItem() {
@@ -88,13 +98,19 @@ export class Item {
             await this.reachItem(this.no)
             await this.iframe.getByRole('button', { name: 'Delete the information' }).waitFor({ timeout: timeoutValue }).catch(() => { throw awaitItemError });
             await this.iframe.getByRole('button', { name: 'Delete the information' }).click();
+            await this.iframe.getByRole('button', { name: 'Yes' }).waitFor({ timeout: timeoutValue }).catch(() => { throw awaitItemError });
             await this.iframe.getByRole('button', { name: 'Yes' }).click();
+            const errorLabel = await this.iframe.getByLabel('The page has an error.');
+            if (await errorLabel.isVisible()) {
+                await this.iframe.getByLabel('The page has an error.').click();
+                throw new Error('Error: The page has an error.');
+            }
         } catch (error) {
             throw error;
         }
     }
 
-    async updateMapData({ no = "", description = "", shelfNo = 0, unitVolume = 0,
+    async updateItem({ no = "", description = "", shelfNo = 0, unitVolume = 0,
         unitCost = 0, unitPrice = 0, vendorItemNo = 0, quantity = 0, taxGroupCode = "" }) {
         const newMapData = new Map<string, any>()
         newMapData
@@ -117,24 +133,31 @@ export class Item {
         }
     }
 
-    async updateItemData(key: string, value: any) {
+    private async updateItemData(key: string, value: any) {
         await this.reachItem(this.no)
         switch (key) {
             case 'no':
                 //Aqui habría que añadir una condicion para comprobar que el numero introducido es valido
-                
+                await this.iframe.getByRole('textbox', { name: 'No.', exact: true }).fill(value);
                 break;
             case 'description':
+                await this.iframe.getByRole('textbox', { name: 'Description' }).fill(value);
                 break;
             case 'shelfNo':
+                await this.iframe.getByRole('textbox', { name: 'Shelf No.' }).fill(value);
                 break;
             case 'unitVolume':
+                await this.iframe.getByLabel('Unit Volume').fill(value);
                 break;
             case 'unitCost':
+                await this.iframe.getByRole('textbox', { name: 'Unit Cost' }).fill(value);
                 break;
             case 'unitPrice':
+                await this.iframe.getByRole('button', { name: 'Prices & Sales" / "' }).fill(value);
+                await this.iframe.getByRole('textbox', { name: 'Unit Price' }).fill(value);
                 break;
             case 'vendorItemNo':
+                await this.iframe.getByRole('textbox', { name: 'Vendor Item No.' }).fill(value);
                 break;
             case 'quantity':
                 break;
@@ -178,19 +201,6 @@ export class Item {
     get getTaxGroupCode() { return this.taxGroupCode; }
 
     set setTaxGroupCode(value: string) { this.taxGroupCode = value; }
-
-    restoreDataItem({ no = this.no, description = this.description, shelfNo = this.shelfNo, unitVolume = this.unitVolume,
-        unitCost = this.unitCost, unitPrice = this.unitPrice, vendorItemNo = this.vendorItemNo, quantity = this.quantity, taxGroupCode = this.taxGroupCode }) {
-        this.no = no;
-        this.description = description;
-        this.shelfNo = shelfNo;
-        this.unitVolume = unitVolume;
-        this.unitCost = unitCost;
-        this.unitPrice = unitPrice;
-        this.vendorItemNo = vendorItemNo;
-        this.quantity = quantity;
-        this.taxGroupCode = taxGroupCode;
-    }
 }
 
 
@@ -200,29 +210,29 @@ export class Item {
 
 
 test.describe('allTest', () => {
- 
-  test.beforeEach('Open & Login', async ({ page }) => {
-    await login(page);
-  });
 
-  test.afterEach('Wait & Close', async ({ page }) => {
-    await page.waitForLoadState('networkidle');
-    await page.close();
-  });
+    test.beforeEach('Open & Login', async ({ page }) => {
+        await login(page);
+    });
 
-  test('Class Item Test', async ({ page }) => {
+    test.afterEach('Wait & Close', async ({ page }) => {
+        await page.waitForLoadState('networkidle');
+        //await page.close();
+    });
 
-    const it = new Item({
-        description: "item precioso",
-        shelfNo: 10,
-        unitVolume: 20,
-        unitCost: 30,
-        unitPrice: 40,
-        vendorItemNo: 50
-    }, page);
+    test('Class Item Test', async ({ page }) => {
 
-    await it.deleteItemById('1224')
-    console.log()
-});
+        const it = new Item({
+            description: "item precioso",
+            shelfNo: 10,
+            unitVolume: 20,
+            unitCost: 30,
+            unitPrice: 40,
+            vendorItemNo: 50
+        }, page);
+
+        await it.deleteItemById('1313')
+        console.log()
+    });
 
 });
