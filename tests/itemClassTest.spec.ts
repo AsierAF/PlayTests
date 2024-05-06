@@ -63,13 +63,19 @@ export class Item {
             this.no = await this.iframe.locator('.title--DaOt1SlIHGgb2tatyyfP').innerText();
             await this.iframe.getByRole('textbox', { name: 'Description' }).fill(this.description);
             await this.iframe.getByLabel('Unit Volume').fill(this.unitVolume.toString());
+            await this.iframe.getByRole('textbox', { name: 'Shelf No.' }).fill(this.shelfNo.toString());
+            await this.iframe.getByRole('button', { name: 'Costs & Posting" / "' }).click();
+            await this.iframe.getByRole('textbox', { name: 'Unit Cost' }).fill(this.unitCost.toString());
+            await this.iframe.getByRole('button', { name: 'Prices & Sales" / "' }).click();
+            await this.iframe.getByRole('textbox', { name: 'Unit Price' }).fill(this.unitPrice.toString());
+            await this.iframe.getByRole('button', { name: 'Replenishment" / "' }).click();
+            await this.iframe.getByRole('textbox', { name: 'Vendor Item No.' }).fill(this.vendorItemNo.toString());
+            await this.iframe.getByRole('button', { name: 'Back' }).click();
             await this.iframe.getByRole('button', { name: 'Back' }).click();
         } catch (error) {
             throw error;
         }
     }
-
-
 
     async deleteItemById(no: string) {
         try {
@@ -87,10 +93,6 @@ export class Item {
         } catch (error) {
             throw error;
         }
-    }
-
-    async checkIfDeleted () {
-        
     }
 
     async deleteCurrentItem() {
@@ -123,7 +125,9 @@ export class Item {
             .set('vendorItemNo', vendorItemNo)
             .set('quantity', quantity)
             .set('taxGroupCode', taxGroupCode);
-
+        await this.reachItem(this.no)
+        await this.iframe.locator('.title--DaOt1SlIHGgb2tatyyfP').waitFor({ timeout: timeoutValue }).catch(() => { throw awaitIdItemError; });
+        await this.iframe.locator('.title--DaOt1SlIHGgb2tatyyfP').click();
         for (const [key, value] of newMapData.entries()) {
             const initialValue = this.initialMapData.get(key);
             const updatedValue = newMapData.get(key)
@@ -131,33 +135,42 @@ export class Item {
                 await this.updateItemData(key, value);
             }
         }
+        await this.iframe.getByRole('button', { name: 'Back' }).click();
+        await this.iframe.getByRole('button', { name: 'Back' }).waitFor({ timeout: timeoutValue }).catch(() => { throw awaitIdItemError; });;
+        await this.iframe.getByRole('button', { name: 'Back' }).click();
     }
 
     private async updateItemData(key: string, value: any) {
-        await this.reachItem(this.no)
+       
         switch (key) {
             case 'no':
                 //Aqui habría que añadir una condicion para comprobar que el numero introducido es valido
-                await this.iframe.getByRole('textbox', { name: 'No.', exact: true }).fill(value);
+                await this.iframe.getByRole('textbox', { name: 'No.', exact: true }).clear();
+                await this.iframe.getByRole('textbox', { name: 'No.', exact: true }).fill(value.toString());
                 break;
             case 'description':
-                await this.iframe.getByRole('textbox', { name: 'Description' }).fill(value);
+                await this.iframe.getByRole('textbox', { name: 'Description' }).clear();
+                await this.iframe.getByRole('textbox', { name: 'Description' }).fill(value.toString());
                 break;
             case 'shelfNo':
-                await this.iframe.getByRole('textbox', { name: 'Shelf No.' }).fill(value);
+                await this.iframe.getByRole('textbox', { name: 'Shelf No.' }).clear()
+                await this.iframe.getByRole('textbox', { name: 'Shelf No.' }).fill(value.toString());
                 break;
             case 'unitVolume':
-                await this.iframe.getByLabel('Unit Volume').fill(value);
+                await this.iframe.getByLabel('Unit Volume').clear()
+                await this.iframe.getByLabel('Unit Volume').fill(value.toString());
                 break;
             case 'unitCost':
-                await this.iframe.getByRole('textbox', { name: 'Unit Cost' }).fill(value);
+                await this.iframe.getByRole('textbox', { name: 'Unit Cost' }).clear();
+                await this.iframe.getByRole('textbox', { name: 'Unit Cost' }).fill(value.toString());
                 break;
             case 'unitPrice':
-                await this.iframe.getByRole('button', { name: 'Prices & Sales" / "' }).fill(value);
-                await this.iframe.getByRole('textbox', { name: 'Unit Price' }).fill(value);
+                await this.iframe.getByRole('textbox', { name: 'Unit Price' }).clear()
+                await this.iframe.getByRole('textbox', { name: 'Unit Price' }).fill(value.toString());
                 break;
             case 'vendorItemNo':
-                await this.iframe.getByRole('textbox', { name: 'Vendor Item No.' }).fill(value);
+                await this.iframe.getByRole('textbox', { name: 'Vendor Item No.' }).clear()
+                await this.iframe.getByRole('textbox', { name: 'Vendor Item No.' }).fill(value.toString());
                 break;
             case 'quantity':
                 break;
@@ -231,8 +244,10 @@ test.describe('allTest', () => {
             vendorItemNo: 50
         }, page);
 
-        await it.deleteItemById('1313')
-        console.log()
+        await it.createItem()
+        await it.updateItem({ "description": "item modificado", "unitVolume" : 90, "vendorItemNo": 42})
+        console.log('no: ', it.getNo)
+        console.log('desc: ', it.getDescription)
     });
 
 });
